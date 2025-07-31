@@ -25,32 +25,32 @@ The fastest way to get started - no installation required!
 
 ```bash
 # Basic usage (rate limited to 60 requests/hour)
-npx @gianpieropuleo/radix-mcp-server
+npx @gianpieropuleo/radix-mcp-server@latest
 
 # With GitHub token for better rate limits (5000 requests/hour)
-npx @gianpieropuleo/radix-mcp-server --github-api-key ghp_your_token_here
+npx @gianpieropuleo/radix-mcp-server@latest --github-api-key ghp_your_token_here
 
 # Short form
-npx @gianpieropuleo/radix-mcp-server -g ghp_your_token_here
+npx @gianpieropuleo/radix-mcp-server@latest -g ghp_your_token_here
 
 # Using environment variable
 export GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_token_here
-npx @gianpieropuleo/radix-mcp-server
+npx @gianpieropuleo/radix-mcp-server@latest
 
 # Select specific library
-npx @gianpieropuleo/radix-mcp-server --library themes
-npx @gianpieropuleo/radix-mcp-server --library primitives
-npx @gianpieropuleo/radix-mcp-server --library colors
+npx @gianpieropuleo/radix-mcp-server@latest --library themes
+npx @gianpieropuleo/radix-mcp-server@latest --library primitives
+npx @gianpieropuleo/radix-mcp-server@latest --library colors
 
 # All libraries (default)
-npx @gianpieropuleo/radix-mcp-server --library all
+npx @gianpieropuleo/radix-mcp-server@latest --library all
 
 # Using environment variable for library
 export RADIX_LIBRARY=themes
-npx @gianpieropuleo/radix-mcp-server
+npx @gianpieropuleo/radix-mcp-server@latest
 ```
 
-**🎯 Try it now**: Run `npx @gianpieropuleo/radix-mcp-server --help` to see all options!
+**🎯 Try it now**: Run `npx @gianpieropuleo/radix-mcp-server@latest --help` to see all options!
 
 ### 🔧 Command Line Options
 
@@ -69,11 +69,11 @@ Environment Variables:
   LOG_LEVEL                       Log level (debug, info, warn, error) - default: info
 
 Examples:
-  npx @gianpieropuleo/radix-mcp-server
-  npx @gianpieropuleo/radix-mcp-server --library themes
-  npx @gianpieropuleo/radix-mcp-server --library primitives --github-api-key ghp_your_token_here
-  npx @gianpieropuleo/radix-mcp-server -l colors -g ghp_your_token_here
-  npx @gianpieropuleo/radix-mcp-server -l all
+  npx @gianpieropuleo/radix-mcp-server@latest
+  npx @gianpieropuleo/radix-mcp-server@latest --library themes
+  npx @gianpieropuleo/radix-mcp-server@latest --library primitives --github-api-key ghp_your_token_here
+  npx @gianpieropuleo/radix-mcp-server@latest -l colors -g ghp_your_token_here
+  npx @gianpieropuleo/radix-mcp-server@latest -l all
 ```
 
 ## 🎨 Radix UI Libraries
@@ -145,7 +145,7 @@ Beautiful, accessible color scales with semantic meanings and dark mode support.
 **Method 1: Command Line (Quick testing)**
 
 ```bash
-npx @gianpieropuleo/radix-mcp-server --github-api-key ghp_your_token_here
+npx @gianpieropuleo/radix-mcp-server@latest --github-api-key ghp_your_token_here
 ```
 
 **Method 2: Environment Variable (Recommended)**
@@ -155,7 +155,7 @@ npx @gianpieropuleo/radix-mcp-server --github-api-key ghp_your_token_here
 export GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_token_here
 
 # Then simply run:
-npx @gianpieropuleo/radix-mcp-server
+npx @gianpieropuleo/radix-mcp-server@latest
 ```
 
 ## 🛠️ Editor Integration
@@ -170,7 +170,7 @@ Add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_confi
     "radix-ui": {
       "command": "npx",
       "args": [
-        "@gianpieropuleo/radix-mcp-server",
+        "@gianpieropuleo/radix-mcp-server@latest",
         "--github-api-key",
         "ghp_your_token_here"
       ]
@@ -179,7 +179,7 @@ Add to your Claude Desktop configuration (`~/.config/Claude/claude_desktop_confi
     "radix-themes": {
       "command": "npx",
       "args": [
-        "@gianpieropuleo/radix-mcp-server",
+        "@gianpieropuleo/radix-mcp-server@latest",
         "--library",
         "themes",
         "--github-api-key",
@@ -197,7 +197,7 @@ Or with environment variable:
   "mcpServers": {
     "radix-ui": {
       "command": "npx",
-      "args": ["@gianpieropuleo/radix-mcp-server"],
+      "args": ["@gianpieropuleo/radix-mcp-server@latest"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_your_token_here"
       }
@@ -217,7 +217,7 @@ Or with environment variable:
       "radix-ui": {
         "command": "npx",
         "args": [
-          "@gianpieropuleo/radix-mcp-server",
+          "@gianpieropuleo/radix-mcp-server@latest",
           "--github-api-key",
           "ghp_your_token_here"
         ]
@@ -234,7 +234,7 @@ Or with environment variable:
   "claude.mcpServers": {
     "radix-ui": {
       "command": "npx",
-      "args": ["@gianpieropuleo/radix-mcp-server"],
+      "args": ["@gianpieropuleo/radix-mcp-server@latest"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_your_token_here"
       }
@@ -252,7 +252,7 @@ Create a `.cursorrules` file in your project root:
   "mcpServers": {
     "radix-ui": {
       "command": "npx",
-      "args": ["@gianpieropuleo/radix-mcp-server"],
+      "args": ["@gianpieropuleo/radix-mcp-server@latest"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_your_token_here"
       }
