@@ -37,3 +37,6 @@ coverage/
 .cache/
 tmp/
 temp/
+
+# Local LLM context
+.context/

@@ -46,3 +46,6 @@ V4_MIGRATION_SUMMARY.md
 # Git files
 .git/
 .gitignore
+
+# Local LLM context
+.context/

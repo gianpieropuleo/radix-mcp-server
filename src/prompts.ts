@@ -1,20 +1,18 @@
 /**
  * Prompts implementation for the Model Context Protocol (MCP) server.
  * 
- * This file defines prompts that guide the AI model's responses.
- * Prompts help to direct the model on how to process user requests.
+ * This file defines prompts that guide the AI model's responses for Radix UI.
+ * Prompts help to direct the model on how to process user requests for Radix components.
  */
-
-import { getFramework } from './utils/framework.js';
 
 /**
  * List of prompts metadata available in this MCP server
  * Each prompt must have a name, description, and arguments if parameters are needed
  */
 export const prompts = {
-    "build-shadcn-page": {
-      name: "build-shadcn-page",
-      description: "Generate a complete shadcn/ui page using v4 components and blocks",
+    "build-radix-page": {
+      name: "build-radix-page",
+      description: "Generate a complete page using Radix UI components (Themes, Primitives, Colors)",
       arguments: [
           { 
               name: "pageType",
@@ -37,7 +35,7 @@ export const prompts = {
     },
     "create-dashboard": {
       name: "create-dashboard",
-      description: "Create a comprehensive dashboard using shadcn/ui v4 blocks and components",
+      description: "Create a comprehensive dashboard using Radix UI components",
       arguments: [
           {
               name: "dashboardType",
@@ -56,7 +54,7 @@ export const prompts = {
     },
     "create-auth-flow": {
       name: "create-auth-flow",
-      description: "Generate authentication pages using shadcn/ui v4 login blocks",
+      description: "Generate authentication pages using Radix UI components",
       arguments: [
           {
               name: "authType",
@@ -73,9 +71,9 @@ export const prompts = {
           }
       ],
     },
-    "optimize-shadcn-component": {
-      name: "optimize-shadcn-component",
-      description: "Optimize or enhance existing shadcn/ui components with best practices",
+    "optimize-radix-component": {
+      name: "optimize-radix-component",
+      description: "Optimize or enhance existing Radix UI components with best practices",
       arguments: [
           {
               name: "component",
@@ -94,7 +92,7 @@ export const prompts = {
     },
     "create-data-table": {
       name: "create-data-table",
-      description: "Create advanced data tables with shadcn/ui components",
+      description: "Create advanced data tables with Radix UI components",
       arguments: [
           {
               name: "dataType",
@@ -118,11 +116,9 @@ export const prompts = {
  * Each handler generates the actual prompt content with the provided parameters
  */
 export const promptHandlers = {
-    "build-shadcn-page": ({ pageType, features = "", layout = "sidebar", style = "modern" }: { 
+    "build-radix-page": ({ pageType, features = "", layout = "sidebar", style = "modern" }: { 
       pageType: string, features?: string, layout?: string, style?: string 
     }) => {
-      const framework = getFramework();
-      const isSvelte = framework === 'svelte';
       
       return {
         messages: [
@@ -130,7 +126,7 @@ export const promptHandlers = {
             role: "user",
             content: {
               type: "text",
-              text: `Create a complete ${pageType} page using shadcn/ui v4 components and blocks. 
+              text: `Create a complete ${pageType} page using Radix UI libraries (Themes, Primitives, Colors). 
 
 REQUIREMENTS:
 - Page Type: ${pageType}
@@ -139,15 +135,20 @@ REQUIREMENTS:
 - Design Style: ${style}
 
 INSTRUCTIONS:
-1. Use the MCP tools to explore available v4 blocks for this page type:
-   - Use 'list_blocks' to see available categories
-   - Use 'get_block' to fetch specific block implementations
+1. Use the MCP tools to explore available Radix UI components:
+   - Use 'themes/list_components' to see Radix Themes components
+   - Use 'primitives/list_components' to see Radix Primitives
+   - Use 'colors/list_scales' to see available color scales
+   - Use specific get tools to fetch component implementations
 
 2. Build the page following these principles:
-   - Use shadcn/ui v4 components and blocks as building blocks
-   - Ensure responsive design with Tailwind CSS classes
+   - Use Radix UI components as building blocks
+   - Leverage Radix Themes for high-level styling
+   - Use Radix Primitives for unstyled, accessible components
+   - Apply Radix Colors for consistent color system
+   - Ensure responsive design with CSS-in-JS or CSS modules
    - Implement proper TypeScript types
-   - Follow ${isSvelte ? 'Svelte' : 'React'} best practices and ${isSvelte ? 'runes' : 'hooks'} patterns
+   - Follow React best practices and hooks patterns
    - Include proper accessibility attributes
 
 3. For ${pageType} pages specifically:
@@ -156,15 +157,15 @@ INSTRUCTIONS:
 4. Code Structure:
    - Create a main page component
    - Use sub-components for complex sections
-   - Include proper imports from shadcn/ui registry
-   - Add necessary state management with ${isSvelte ? 'Svelte runes' : 'React hooks'}
+   - Include proper imports from Radix UI packages
+   - Add necessary state management with React hooks
    - Include proper error handling
 
 5. Styling Guidelines:
-   - Use consistent spacing and typography
+   - Use consistent spacing and typography from Radix Themes
    - Implement ${style} design principles
-   - Ensure dark/light mode compatibility
-   - Use shadcn/ui design tokens
+   - Ensure dark/light mode compatibility with Radix Colors
+   - Use Radix design tokens and semantic color scales
 
 Please provide complete, production-ready code with proper imports and TypeScript types.`,
             },
@@ -176,8 +177,6 @@ Please provide complete, production-ready code with proper imports and TypeScrip
     "create-dashboard": ({ dashboardType, widgets = "charts,tables,cards", navigation = "sidebar" }: { 
       dashboardType: string, widgets?: string, navigation?: string 
     }) => {
-      const framework = getFramework();
-      const isSvelte = framework === 'svelte';
       
       return {
         messages: [
@@ -185,7 +184,7 @@ Please provide complete, production-ready code with proper imports and TypeScrip
             role: "user",
             content: {
               type: "text",
-              text: `Create a comprehensive ${dashboardType} dashboard using shadcn/ui v4 blocks and components.
+              text: `Create a comprehensive ${dashboardType} dashboard using Radix UI components.
 
 REQUIREMENTS:
 - Dashboard Type: ${dashboardType}
@@ -193,30 +192,31 @@ REQUIREMENTS:
 - Navigation: ${navigation}
 
 INSTRUCTIONS:
-1. First, explore available dashboard blocks:
-   - Use 'list_blocks' with category="dashboard" to see available dashboard blocks
-   - Use 'get_block' to examine dashboard-01 and other dashboard implementations
-   - Study the structure and component usage
+1. First, explore available Radix UI components:
+   - Use 'themes/list_components' to see available theme components
+   - Use 'primitives/list_components' to find navigation and layout primitives
+   - Use 'colors/list_scales' to choose appropriate color schemes
+   - Study component APIs and usage patterns
 
 2. Dashboard Structure:
-   - Implement ${navigation} navigation using appropriate shadcn/ui components
-   - Create a responsive grid layout for widgets
-   - Include proper header with user menu and notifications
-   - Add breadcrumb navigation
+   - Implement ${navigation} navigation using Radix Themes components
+   - Create a responsive grid layout for widgets using CSS Grid/Flexbox
+   - Include proper header with user menu using Radix Primitives
+   - Add breadcrumb navigation with Radix components
 
 3. Widgets to Include:
    ${widgets.split(',').map(widget => `- ${widget.trim()} with real-time data simulation`).join('\n   ')}
 
 4. Key Features:
    - Responsive design that works on mobile, tablet, and desktop
-   - Interactive charts using a charting library compatible with shadcn/ui
-   - Data tables with sorting, filtering, and pagination
-   - Modal dialogs for detailed views
-   - Toast notifications for user feedback
+   - Interactive charts using a charting library compatible with Radix
+   - Data tables using Radix Primitives for accessibility
+   - Modal dialogs using Radix Dialog primitive
+   - Toast notifications using Radix Toast primitive
 
 5. Data Management:
    - Create mock data structures for ${dashboardType}
-   - Implement state management with ${isSvelte ? 'Svelte runes' : 'React hooks'}
+   - Implement state management with React hooks
    - Add loading states and error handling
    - Include data refresh functionality
 
@@ -242,7 +242,7 @@ Provide complete code with all necessary imports, types, and implementations.`,
             role: "user",
             content: {
               type: "text",
-              text: `Create a complete ${authType} authentication flow using shadcn/ui v4 login blocks and components.
+              text: `Create a complete ${authType} authentication flow using Radix UI components.
 
 REQUIREMENTS:
 - Auth Type: ${authType}
@@ -250,10 +250,10 @@ REQUIREMENTS:
 - Features: ${features}
 
 INSTRUCTIONS:
-1. Explore login blocks first:
-   - Use 'list_blocks' with category="login" to see available login blocks
-   - Use 'get_block' to examine login-01, login-02, etc. implementations
-   - Study different authentication patterns and layouts
+1. Explore available Radix UI components:
+   - Use 'themes/list_components' to see form and button components
+   - Use 'primitives/list_components' to find form primitives
+   - Study component APIs for forms, dialogs, and validation
 
 2. Authentication Components:
    - Form validation using react-hook-form or similar
@@ -297,11 +297,9 @@ Provide complete authentication flow code with proper TypeScript types, validati
       };
     },
 
-    "optimize-shadcn-component": ({ component, optimization = "performance", useCase = "general" }: { 
+    "optimize-radix-component": ({ component, optimization = "performance", useCase = "general" }: { 
       component: string, optimization?: string, useCase?: string 
     }) => {
-      const framework = getFramework();
-      const isSvelte = framework === 'svelte';
       
       return {
         messages: [
@@ -309,7 +307,7 @@ Provide complete authentication flow code with proper TypeScript types, validati
             role: "user",
             content: {
               type: "text",
-              text: `Optimize the ${component} shadcn/ui component for ${optimization} and ${useCase} use case.
+              text: `Optimize the ${component} Radix UI component for ${optimization} and ${useCase} use case.
 
 REQUIREMENTS:
 - Component: ${component}
@@ -318,12 +316,12 @@ REQUIREMENTS:
 
 INSTRUCTIONS:
 1. First, analyze the current component:
-   - Use 'get_component' to fetch the ${component} source code
-   - Use 'get_component_demo' to see current usage examples
-   - Use 'get_component_metadata' to understand dependencies
+   - Use appropriate Radix tools to fetch the ${component} source code
+   - Study component API and implementation patterns
+   - Understand component dependencies and requirements
 
 2. Optimization Strategy for ${optimization}:
-   ${getOptimizationInstructions(optimization, isSvelte)}
+   ${getOptimizationInstructions(optimization)}
 
 3. Use Case Specific Enhancements for ${useCase}:
    - Analyze how ${component} is typically used in ${useCase} scenarios
@@ -337,9 +335,9 @@ INSTRUCTIONS:
    - Include usage examples demonstrating improvements
 
 5. Best Practices:
-   - Follow ${isSvelte ? 'Svelte' : 'React'} performance best practices
-   - Implement ${isSvelte ? 'Svelte reactivity patterns' : 'proper memoization'} where needed
-   - Ensure backward compatibility
+   - Follow React performance best practices
+   - Implement proper memoization where needed
+   - Ensure backward compatibility with Radix API
    - Add comprehensive prop validation
 
 6. Testing Considerations:
@@ -363,7 +361,7 @@ Provide the optimized component code with detailed explanations of improvements 
             role: "user",
             content: {
               type: "text",
-              text: `Create an advanced data table for ${dataType} using shadcn/ui v4 components.
+              text: `Create an advanced data table for ${dataType} using Radix UI components.
 
 REQUIREMENTS:
 - Data Type: ${dataType}
@@ -371,10 +369,10 @@ REQUIREMENTS:
 - Actions: ${actions}
 
 INSTRUCTIONS:
-1. Explore table components:
-   - Use 'get_component' for 'table' to see the base table implementation
-   - Use 'get_component_demo' for 'table' to see usage examples
-   - Look for any existing table blocks in the blocks directory
+1. Explore table-related components:
+   - Use Radix tools to explore available components
+   - Look for table, grid, or data display components
+   - Study primitive components that could be used for tables
 
 2. Table Structure:
    - Create a reusable DataTable component
@@ -432,45 +430,45 @@ Provide complete data table implementation with proper TypeScript types, mock da
 function getPageTypeSpecificInstructions(pageType: string): string {
   const instructions = {
     dashboard: `
-   - Use dashboard blocks as foundation (dashboard-01)
-   - Include metrics cards, charts, and data tables
-   - Implement sidebar navigation with proper menu structure
-   - Add header with user profile and notifications
-   - Create responsive grid layout for widgets`,
+   - Use Radix Themes components for layout foundation
+   - Include metrics cards, charts, and data tables with proper accessibility
+   - Implement sidebar navigation using Radix Navigation Menu
+   - Add header with user profile using Radix Avatar and Dropdown Menu
+   - Create responsive grid layout for widgets using CSS Grid`,
     
     login: `
-   - Use login blocks as reference (login-01 through login-05)
+   - Use Radix Form primitives for accessible form handling
    - Implement form validation with clear error messages
-   - Add social authentication options if specified
-   - Include forgot password and sign-up links
-   - Ensure mobile-responsive design`,
+   - Add social authentication options using Radix Button components
+   - Include forgot password and sign-up links with proper navigation
+   - Ensure mobile-responsive design with Radix responsive utilities`,
     
     calendar: `
-   - Use calendar blocks (calendar-01 through calendar-32)
-   - Implement different calendar views (month, week, day)
-   - Add event creation and management
-   - Include date navigation and filtering
-   - Support event categories and colors`,
+   - Build calendar using Radix Themes components and primitives
+   - Implement different calendar views (month, week, day) with state management
+   - Add event creation using Radix Dialog and Form primitives
+   - Include date navigation using Radix Button and Select components
+   - Support event categories with Radix Colors for visual distinction`,
     
     sidebar: `
-   - Use sidebar blocks as foundation (sidebar-01 through sidebar-16)
-   - Implement collapsible navigation
-   - Add proper menu hierarchy
-   - Include search functionality
-   - Support both light and dark themes`,
+   - Use Radix Navigation Menu as foundation for sidebar
+   - Implement collapsible navigation with Radix Collapsible primitive
+   - Add proper menu hierarchy with nested navigation
+   - Include search functionality with Radix TextField
+   - Support both light and dark themes using Radix Colors`,
     
     products: `
-   - Use products blocks as reference (products-01)
-   - Create product grid/list views
-   - Implement filtering and sorting
-   - Add product details modal or page
-   - Include shopping cart functionality if needed`,
+   - Create product grid/list views using Radix Themes layout components
+   - Implement filtering and sorting with Radix Select and Toggle Group
+   - Add product details modal using Radix Dialog primitive
+   - Include shopping cart functionality with Radix primitives
+   - Use Radix Colors for product status and category indicators`,
     
     custom: `
-   - Analyze requirements and choose appropriate blocks
-   - Combine multiple block patterns as needed
-   - Focus on component reusability
-   - Ensure consistent design patterns`
+   - Analyze requirements and choose appropriate Radix components
+   - Combine Radix Themes, Primitives, and Colors as needed
+   - Focus on component reusability and accessibility
+   - Ensure consistent design patterns with Radix design system`
   };
   
   return instructions[pageType as keyof typeof instructions] || instructions.custom;
@@ -479,22 +477,15 @@ function getPageTypeSpecificInstructions(pageType: string): string {
 /**
  * Helper function to get optimization specific instructions
  */
-function getOptimizationInstructions(optimization: string, isSvelte: boolean): string {
+function getOptimizationInstructions(optimization: string): string {
   const instructions = {
-    performance: isSvelte ? `
-   - Use Svelte's built-in reactivity with runes for fine-grained updates
-   - Minimize the use of reactive statements that cause unnecessary updates
-   - Use derived state with $derived
-   - Consider using $effect only when necessary
-   - Implement lazy loading for heavy components
-   - Use the $state.raw for non-reactive data to avoid unnecessary reactivity overhead`
-    : `
+    performance: `
    - Implement React.memo for preventing unnecessary re-renders
    - Use useMemo and useCallback hooks appropriately
-   - Optimize bundle size by code splitting
-   - Implement virtual scrolling for large lists
-   - Minimize DOM manipulations
-   - Use lazy loading for heavy components`,
+   - Optimize bundle size by code splitting Radix components
+   - Implement virtual scrolling for large lists with Radix primitives
+   - Minimize DOM manipulations by leveraging Radix's optimized components
+   - Use lazy loading for heavy Radix components`,
    
     accessibility: `
    - Add proper ARIA labels and roles

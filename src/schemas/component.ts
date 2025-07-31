@@ -1,4 +1,4 @@
-// Schema definitions for shadcn/ui components
+// Schema definitions for Radix UI components
 export interface ComponentExample {
   title: string;
   code: string;

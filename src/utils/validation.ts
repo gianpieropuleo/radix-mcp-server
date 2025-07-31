@@ -8,7 +8,7 @@ export const validationSchemas = {
   // Component-related schemas
   componentName: Joi.object({
     componentName: Joi.string().required().min(1).max(100)
-      .description('Name of the shadcn/ui component')
+      .description('Name of the Radix UI component')
   }),
 
   // Search schemas

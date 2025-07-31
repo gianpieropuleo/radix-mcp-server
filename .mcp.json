@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "radix-ui": {
+      "command": "npx",
+      "args": ["@gianpieropuleo/radix-mcp-server@latest"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

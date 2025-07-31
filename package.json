@@ -1,11 +1,11 @@
 {
-  "name": "@jpisnice/shadcn-ui-mcp-server",
-  "version": "1.0.3",
-  "description": "A Model Context Protocol (MCP) server for shadcn/ui components, providing AI assistants with access to component source code, demos, blocks, and metadata.",
+  "name": "@gianpieropuleo/radix-mcp-server",
+  "version": "1.0.7",
+  "description": "A Model Context Protocol (MCP) server for Radix UI libraries (Themes, Primitives, Colors), providing AI assistants with access to component source code, installation guides, and design tokens.",
   "type": "module",
   "main": "./build/index.js",
   "bin": {
-    "shadcn-mcp": "./build/index.js"
+    "radix-mcp-server": "./build/index.js"
   },
   "files": [
     "build/**/*",
@@ -24,30 +24,37 @@
   "keywords": [
     "mcp",
     "model-context-protocol",
-    "shadcn",
-    "shadcn-ui",
+    "radix",
+    "radix-ui",
+    "radix-themes",
+    "radix-primitives",
+    "radix-colors",
     "ui-components",
     "react",
     "typescript",
+    "design-system",
     "ai-tools",
     "claude",
     "copilot"
   ],
-  "author": "Janardhan Pollle <www.janardhanpolle@gmail.com>",
+  "author": "Gianpiero Puleo <gianpiero.puleo@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jpisnice/shadcn-ui-mcp-server.git"
+    "url": "git+https://github.com/gianpieropuleo/radix-mcp-server.git"
   },
   "bugs": {
-    "url": "https://github.com/Jpisnice/shadcn-ui-mcp-server/issues"
+    "url": "https://github.com/gianpieropuleo/radix-mcp-server/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.16.0",
-    "axios": "^1.8.4",
+    "ky": "^1.7.2",
     "cheerio": "^1.0.0",
     "zod": "^3.24.2",
     "winston": "^3.15.0",

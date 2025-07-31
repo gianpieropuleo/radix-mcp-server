@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Test script for shadcn-ui-mcp-server
+# Test script for radix-mcp-server
 # This script validates that the package is ready for npm publishing
 
 set -e
 
-echo "🧪 Testing shadcn-ui-mcp-server package..."
+echo "🧪 Testing radix-mcp-server package..."
 
 # Test 1: Help command
 echo "✅ Testing --help flag..."
@@ -50,7 +50,7 @@ REQUIRED_FILES=(
     "build/index.js"
     "build/handler.js"
     "build/tools/index.js"
-    "build/utils/axios.js"
+    "build/utils/http.js"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do

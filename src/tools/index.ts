@@ -1,98 +1,180 @@
-import { handleGetComponent } from './components/get-component.js';
-import { handleGetComponentDemo } from './components/get-component-demo.js';
-import { handleListComponents } from './components/list-components.js';
-import { handleGetComponentMetadata } from './components/get-component-metadata.js';
-import { handleGetDirectoryStructure } from './repository/get-directory-structure.js';
-import { handleGetBlock } from './blocks/get-block.js';
-import { handleListBlocks } from './blocks/list-blocks.js';
+// Radix Themes tools
+import { handleListThemesComponents } from './themes/list-components.js';
+import { handleGetThemesComponent } from './themes/get-component.js';
+import { handleGetThemesInstallation } from './themes/get-installation.js';
 
-import { schema as getComponentSchema } from './components/get-component.js';
-import { schema as getComponentDemoSchema } from './components/get-component-demo.js';
-import { schema as listComponentsSchema } from './components/list-components.js';
-import { schema as getComponentMetadataSchema } from './components/get-component-metadata.js';
-import { schema as getDirectoryStructureSchema } from './repository/get-directory-structure.js';
-import { schema as getBlockSchema } from './blocks/get-block.js';
-import { schema as listBlocksSchema } from './blocks/list-blocks.js';
+// Radix Primitives tools
+import { handleListPrimitivesComponents } from './primitives/list-components.js';
+import { handleGetPrimitivesComponent } from './primitives/get-component.js';
+import { handleGetPrimitivesInstallation } from './primitives/get-installation.js';
+
+// Radix Colors tools
+import { handleListColorsScales } from './colors/list-scales.js';
+import { handleGetColorsScale } from './colors/get-scale.js';
+import { handleGetColorsInstallation } from './colors/get-installation.js';
+
+// Schemas
+import { schema as listThemesComponentsSchema } from './themes/list-components.js';
+import { schema as getThemesComponentSchema } from './themes/get-component.js';
+import { schema as getThemesInstallationSchema } from './themes/get-installation.js';
+
+import { schema as listPrimitivesComponentsSchema } from './primitives/list-components.js';
+import { schema as getPrimitivesComponentSchema } from './primitives/get-component.js';
+import { schema as getPrimitivesInstallationSchema } from './primitives/get-installation.js';
+
+import { schema as listColorsScalesSchema } from './colors/list-scales.js';
+import { schema as getColorsScaleSchema } from './colors/get-scale.js';
+import { schema as getColorsInstallationSchema } from './colors/get-installation.js';
 
 export const toolHandlers = {
-  get_component: handleGetComponent,
-  get_component_demo: handleGetComponentDemo,
-  list_components: handleListComponents,
-  get_component_metadata: handleGetComponentMetadata,
-  get_directory_structure: handleGetDirectoryStructure,
-  get_block: handleGetBlock,
-  list_blocks: handleListBlocks
+  // Radix Themes tools
+  'themes_list_components': handleListThemesComponents,
+  'themes_get_component': handleGetThemesComponent,
+  'themes_get_installation': handleGetThemesInstallation,
+  
+  // Radix Primitives tools
+  'primitives_list_components': handleListPrimitivesComponents,
+  'primitives_get_component': handleGetPrimitivesComponent,
+  'primitives_get_installation': handleGetPrimitivesInstallation,
+  
+  // Radix Colors tools
+  'colors_list_scales': handleListColorsScales,
+  'colors_get_scale': handleGetColorsScale,
+  'colors_get_installation': handleGetColorsInstallation
 };
 
 export const toolSchemas = {
-  get_component: getComponentSchema,
-  get_component_demo: getComponentDemoSchema,
-  list_components: listComponentsSchema,
-  get_component_metadata: getComponentMetadataSchema,
-  get_directory_structure: getDirectoryStructureSchema,
-  get_block: getBlockSchema,
-  list_blocks: listBlocksSchema
+  // Radix Themes schemas
+  'themes_list_components': listThemesComponentsSchema,
+  'themes_get_component': getThemesComponentSchema,
+  'themes_get_installation': getThemesInstallationSchema,
+  
+  // Radix Primitives schemas
+  'primitives_list_components': listPrimitivesComponentsSchema,
+  'primitives_get_component': getPrimitivesComponentSchema,
+  'primitives_get_installation': getPrimitivesInstallationSchema,
+  
+  // Radix Colors schemas
+  'colors_list_scales': listColorsScalesSchema,
+  'colors_get_scale': getColorsScaleSchema,
+  'colors_get_installation': getColorsInstallationSchema
 };
 
+// Export tools for dynamic registration based on library selection
 export const tools = {
-  'get_component': {
-    name: 'get_component',
-    description: 'Get the source code for a specific shadcn/ui v4 component',
+  // Radix Themes tools
+  'themes_list_components': {
+    name: 'themes_list_components',
+    description: 'Get all available Radix Themes components',
     inputSchema: {
       type: 'object',
-      properties: getComponentSchema,
-      required: ['componentName']
+      properties: {},
+      additionalProperties: false
     }
   },
-  'get_component_demo': {
-    name: 'get_component_demo',
-    description: 'Get demo code illustrating how a shadcn/ui v4 component should be used',
+  'themes_get_component': {
+    name: 'themes_get_component',
+    description: 'Get the source code for a specific Radix Themes component',
     inputSchema: {
       type: 'object',
-      properties: getComponentDemoSchema,
-      required: ['componentName']
+      properties: {
+        componentName: {
+          type: 'string',
+          description: 'Name of the Radix Themes component to retrieve'
+        }
+      },
+      required: ['componentName'],
+      additionalProperties: false
     }
   },
-  'list_components': {
-    name: 'list_components',
-    description: 'Get all available shadcn/ui v4 components',
+  'themes_get_installation': {
+    name: 'themes_get_installation',
+    description: 'Get installation instructions for Radix Themes',
     inputSchema: {
       type: 'object',
-      properties: {}
+      properties: {
+        packageManager: {
+          type: 'string',
+          enum: ['npm', 'yarn', 'pnpm'],
+          description: 'Package manager to use for installation'
+        }
+      },
+      additionalProperties: false
     }
   },
-  'get_component_metadata': {
-    name: 'get_component_metadata',
-    description: 'Get metadata for a specific shadcn/ui v4 component',
+  
+  // Radix Primitives tools
+  'primitives_list_components': {
+    name: 'primitives_list_components',
+    description: 'Get all available Radix Primitives components',
     inputSchema: {
       type: 'object',
-      properties: getComponentMetadataSchema,
-      required: ['componentName']
+      properties: {},
+      additionalProperties: false
     }
   },
-  'get_directory_structure': {
-    name: 'get_directory_structure',
-    description: 'Get the directory structure of the shadcn-ui v4 repository',
+  'primitives_get_component': {
+    name: 'primitives_get_component',
+    description: 'Get the source code for a specific Radix Primitives component',
     inputSchema: {
       type: 'object',
-      properties: getDirectoryStructureSchema
+      properties: {
+        componentName: {
+          type: 'string',
+          description: 'Name of the Radix Primitives component to retrieve'
+        }
+      },
+      required: ['componentName'],
+      additionalProperties: false
     }
   },
-  'get_block': {
-    name: 'get_block',
-    description: 'Get source code for a specific shadcn/ui v4 block (e.g., calendar-01, dashboard-01)',
+  'primitives_get_installation': {
+    name: 'primitives_get_installation',
+    description: 'Get installation instructions for Radix Primitives',
     inputSchema: {
       type: 'object',
-      properties: getBlockSchema,
-      required: ['blockName']
+      properties: {
+        componentName: {
+          type: 'string',
+          description: 'Optional component name for specific installation instructions'
+        }
+      },
+      additionalProperties: false
     }
   },
-  'list_blocks': {
-    name: 'list_blocks',
-    description: 'Get all available shadcn/ui v4 blocks with categorization',
+  
+  // Radix Colors tools
+  'colors_list_scales': {
+    name: 'colors_list_scales',
+    description: 'Get all available Radix Colors color scales',
     inputSchema: {
       type: 'object',
-      properties: listBlocksSchema
+      properties: {},
+      additionalProperties: false
+    }
+  },
+  'colors_get_scale': {
+    name: 'colors_get_scale',
+    description: 'Get a specific Radix Colors color scale definition',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        scaleName: {
+          type: 'string',
+          description: 'Name of the color scale to retrieve'
+        }
+      },
+      required: ['scaleName'],
+      additionalProperties: false
+    }
+  },
+  'colors_get_installation': {
+    name: 'colors_get_installation',
+    description: 'Get installation instructions for Radix Colors',
+    inputSchema: {
+      type: 'object',
+      properties: {},
+      additionalProperties: false
     }
   }
 }; 

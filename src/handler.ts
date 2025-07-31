@@ -18,13 +18,15 @@ import {
   McpError
 } from "@modelcontextprotocol/sdk/types.js";
 import { type Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { resourceHandlers, resources } from "./resources.js";
-import { promptHandlers, prompts } from "./prompts.js";
+// Note: Removing resource and prompt handlers to focus on the tool-based approach for Radix
+// import { resourceHandlers, resources } from "./resources.js";
+// import { promptHandlers, prompts } from "./prompts.js";
 import { toolHandlers, tools } from "./tools/index.js";
-import {
-  getResourceTemplate,
-  resourceTemplates,
-} from "./resource-templates.js";
+// Note: Removing resource templates for Radix implementation
+// import {
+//   getResourceTemplate,
+//   resourceTemplates,
+// } from "./resource-templates.js";
 import { z } from "zod";
 import { validateAndSanitizeParams } from './utils/validation.js';
 import { circuitBreakers } from './utils/circuit-breaker.js';
@@ -69,26 +71,25 @@ async function handleRequest<T>(
 export const setupHandlers = (server: Server): void => {
   logInfo('Setting up request handlers...');
 
-  // List available resources when clients request them
-  server.setRequestHandler(
-    ListResourcesRequestSchema,
-    async (request) => {
-      return await handleRequest(
-        'list_resources',
-        request.params,
-        async () => ({ resources })
-      );
-    }
-  );
+  // Note: Commenting out resource handlers for Radix implementation
+  // server.setRequestHandler(
+  //   ListResourcesRequestSchema,
+  //   async (request) => {
+  //     return await handleRequest(
+  //       'list_resources',
+  //       request.params,
+  //       async () => ({ resources })
+  //     );
+  //   }
+  // );
   
-  // Resource Templates
-  server.setRequestHandler(ListResourceTemplatesRequestSchema, async (request) => {
-    return await handleRequest(
-      'list_resource_templates',
-      request.params,
-      async () => ({ resourceTemplates })
-    );
-  });
+  // server.setRequestHandler(ListResourceTemplatesRequestSchema, async (request) => {
+  //   return await handleRequest(
+  //     'list_resource_templates',
+  //     request.params,
+  //     async () => ({ resourceTemplates })
+  //   );
+  // });
 
   // List available tools
   server.setRequestHandler(ListToolsRequestSchema, async (request) => {
@@ -96,186 +97,81 @@ export const setupHandlers = (server: Server): void => {
       'list_tools',
       request.params,
       async () => {
-        // Return the tools that are registered with the server
-        const registeredTools = [
-          {
-            name: 'get_component',
-            description: 'Get the source code for a specific shadcn/ui v4 component',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                componentName: {
-                  type: 'string',
-                  description: 'Name of the shadcn/ui component (e.g., "accordion", "button")',
-                },
-              },
-              required: ['componentName'],
-            },
-          },
-          {
-            name: 'get_component_demo',
-            description: 'Get demo code illustrating how a shadcn/ui v4 component should be used',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                componentName: {
-                  type: 'string',
-                  description: 'Name of the shadcn/ui component (e.g., "accordion", "button")',
-                },
-              },
-              required: ['componentName'],
-            },
-          },
-          {
-            name: 'list_components',
-            description: 'Get all available shadcn/ui v4 components',
-            inputSchema: {
-              type: 'object',
-              properties: {},
-            },
-          },
-          {
-            name: 'get_component_metadata',
-            description: 'Get metadata for a specific shadcn/ui v4 component',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                componentName: {
-                  type: 'string',
-                  description: 'Name of the shadcn/ui component (e.g., "accordion", "button")',
-                },
-              },
-              required: ['componentName'],
-            },
-          },
-          {
-            name: 'get_directory_structure',
-            description: 'Get the directory structure of the shadcn-ui v4 repository',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                path: {
-                  type: 'string',
-                  description: 'Path within the repository (default: v4 registry)',
-                },
-                owner: {
-                  type: 'string',
-                  description: 'Repository owner (default: "shadcn-ui")',
-                },
-                repo: {
-                  type: 'string',
-                  description: 'Repository name (default: "ui")',
-                },
-                branch: {
-                  type: 'string',
-                  description: 'Branch name (default: "main")',
-                },
-              },
-            },
-          },
-          {
-            name: 'get_block',
-            description: 'Get source code for a specific shadcn/ui v4 block (e.g., calendar-01, dashboard-01)',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                blockName: {
-                  type: 'string',
-                  description: 'Name of the block (e.g., "calendar-01", "dashboard-01", "login-02")',
-                },
-                includeComponents: {
-                  type: 'boolean',
-                  description: 'Whether to include component files for complex blocks (default: true)',
-                },
-              },
-              required: ['blockName'],
-            },
-          },
-          {
-            name: 'list_blocks',
-            description: 'Get all available shadcn/ui v4 blocks with categorization',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                category: {
-                  type: 'string',
-                  description: 'Filter by category (calendar, dashboard, login, sidebar, products)',
-                },
-              },
-            },
-          },
-        ];
+        // Return the Radix tools that are registered with the server
+        const registeredTools = Object.values(tools).map(tool => ({
+          name: tool.name,
+          description: tool.description,
+          inputSchema: tool.inputSchema
+        }));
         
         return { tools: registeredTools };
       }
     );
   });
   
-  // Return resource content when clients request it
-  server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
-    return await handleRequest(
-      'read_resource',
-      request.params,
-      async (validatedParams: any) => {
-        const { uri } = validatedParams;
-        
-        // Check if this is a static resource
-        const resourceHandler = resourceHandlers[uri as keyof typeof resourceHandlers];
-        if (resourceHandler) {
-          const result = await Promise.resolve(resourceHandler());
-          return {
-            contentType: result.contentType,
-            contents: [{
-              uri: uri,
-              text: result.content
-            }]
-          };
-        }
-        
-        // Check if this is a generated resource from a template
-        const resourceTemplateHandler = getResourceTemplate(uri);
-        if (resourceTemplateHandler) {
-          const result = await Promise.resolve(resourceTemplateHandler());
-          return {
-            contentType: result.contentType,
-            contents: [{
-              uri: uri,
-              text: result.content
-            }]
-          };
-        }
-        
-        throw new Error(`Resource not found: ${uri}`);
-      }
-    );
-  });
+  // Note: Commenting out resource and prompt handlers for Radix implementation
+  // server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  //   return await handleRequest(
+  //     'read_resource',
+  //     request.params,
+  //     async (validatedParams: any) => {
+  //       const { uri } = validatedParams;
+  //       
+  //       // Check if this is a static resource
+  //       const resourceHandler = resourceHandlers[uri as keyof typeof resourceHandlers];
+  //       if (resourceHandler) {
+  //         const result = await Promise.resolve(resourceHandler());
+  //         return {
+  //           contentType: result.contentType,
+  //           contents: [{
+  //             uri: uri,
+  //             text: result.content
+  //           }]
+  //         };
+  //       }
+  //       
+  //       // Check if this is a generated resource from a template
+  //       const resourceTemplateHandler = getResourceTemplate(uri);
+  //       if (resourceTemplateHandler) {
+  //         const result = await Promise.resolve(resourceTemplateHandler());
+  //         return {
+  //           contentType: result.contentType,
+  //           contents: [{
+  //             uri: uri,
+  //             text: result.content
+  //           }]
+  //         };
+  //       }
+  //       
+  //       throw new Error(`Resource not found: ${uri}`);
+  //     }
+  //   );
+  // });
 
-  // List available prompts
-  server.setRequestHandler(ListPromptsRequestSchema, async (request) => {
-    return await handleRequest(
-      'list_prompts',
-      request.params,
-      async () => ({ prompts: Object.values(prompts) })
-    );
-  });
+  // server.setRequestHandler(ListPromptsRequestSchema, async (request) => {
+  //   return await handleRequest(
+  //     'list_prompts',
+  //     request.params,
+  //     async () => ({ prompts: Object.values(prompts) })
+  //   );
+  // });
 
-  // Get specific prompt content with optional arguments
-  server.setRequestHandler(GetPromptRequestSchema, async (request) => {
-    return await handleRequest(
-      'get_prompt',
-      request.params,
-      async (validatedParams: any) => {
-        const { name, arguments: args } = validatedParams;
-        const promptHandler = promptHandlers[name as keyof typeof promptHandlers];
-        
-        if (!promptHandler) {
-          throw new Error(`Prompt not found: ${name}`);
-        }
-        
-        return promptHandler(args as any);
-      }
-    );
-  });
+  // server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+  //   return await handleRequest(
+  //     'get_prompt',
+  //     request.params,
+  //     async (validatedParams: any) => {
+  //       const { name, arguments: args } = validatedParams;
+  //       const promptHandler = promptHandlers[name as keyof typeof promptHandlers];
+  //       
+  //       if (!promptHandler) {
+  //         throw new Error(`Prompt not found: ${name}`);
+  //       }
+  //       
+  //       return promptHandler(args as any);
+  //     }
+  //   );
+  // });
 
   // Tool request Handler - executes the requested tool with provided parameters
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -321,29 +217,9 @@ export const setupHandlers = (server: Server): void => {
  */
 function getToolSchema(toolName: string): z.ZodType | undefined {
   try {
-    switch(toolName) {
-      case 'get_component':
-      case 'get_component_details':
-        return z.object(componentSchema);
-        
-      case 'get_examples':
-        return z.object(componentSchema);
-        
-      case 'get_usage':
-        return z.object(componentSchema);
-        
-      case 'search_components':
-        return z.object(searchSchema);
-        
-      case 'get_themes':
-        return z.object(themesSchema);
-        
-      case 'get_blocks':
-        return z.object(blocksSchema);
-        
-      default:
-        return undefined;
-    }
+    // For Radix UI tools, we get the schemas from the tool definitions
+    // instead of hardcoding them here
+    return undefined;
   } catch (error) {
     logError('Schema error', error);
     return undefined;

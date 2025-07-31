@@ -14,7 +14,7 @@ import { logError } from './utils/logger.js';
 export const resources = [
   {
     name: 'get_components',
-    description: 'List of available shadcn/ui components that can be used in the project',
+    description: 'List of available Radix UI components that can be used in the project',
     uri: 'resource:get_components',
     contentType: 'text/plain',
   }
@@ -22,11 +22,11 @@ export const resources = [
 
 /**
  * Handler for the get_components resource
- * @returns List of available shadcn/ui components
+ * @returns List of available Radix UI components
  */
 const getComponentsList = async () => {
   try {
-    // List of available components in shadcn/ui
+    // List of available components in Radix UI
     // This hardcoded list can be updated in the future if needed
     const components = [
       "accordion",

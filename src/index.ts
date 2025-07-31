@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 /**
- * Shadcn UI v4 MCP Server
+ * Radix UI MCP Server
  * 
- * A Model Context Protocol server for shadcn/ui v4 components.
- * Provides AI assistants with access to component source code, demos, blocks, and metadata.
+ * A Model Context Protocol server for Radix UI libraries (Themes, Primitives, Colors).
+ * Provides AI assistants with access to component source code, installation guides, and design tokens.
  * 
  * Usage:
- *   npx shadcn-ui-mcp-server
- *   npx shadcn-ui-mcp-server --github-api-key YOUR_TOKEN
- *   npx shadcn-ui-mcp-server -g YOUR_TOKEN
+ *   npx radix-mcp-server
+ *   npx radix-mcp-server --library themes
+ *   npx radix-mcp-server --library primitives --github-api-key YOUR_TOKEN
+ *   npx radix-mcp-server -l all -g YOUR_TOKEN
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { setupHandlers } from './handler.js';
-import { validateFrameworkSelection, getAxiosImplementation } from './utils/framework.js';
 import { z } from 'zod';
 import { 
   toolHandlers,
@@ -31,30 +31,30 @@ async function parseArgs() {
   // Help flag
   if (args.includes('--help') || args.includes('-h')) {
     console.log(`
-Shadcn UI v4 MCP Server
+Radix UI MCP Server
 
 Usage:
-  npx shadcn-ui-mcp-server [options]
+  npx radix-mcp-server [options]
 
 Options:
+  --library, -l <library>         Radix library: 'themes', 'primitives', 'colors', or 'all' (default: all)
   --github-api-key, -g <token>    GitHub Personal Access Token for API access
-  --framework, -f <framework>     Framework to use: 'react' or 'svelte' (default: react)
   --help, -h                      Show this help message
   --version, -v                   Show version information
 
 Examples:
-  npx shadcn-ui-mcp-server
-  npx shadcn-ui-mcp-server --github-api-key ghp_your_token_here
-  npx shadcn-ui-mcp-server -g ghp_your_token_here
-  npx shadcn-ui-mcp-server --framework svelte
-  npx shadcn-ui-mcp-server -f react
+  npx radix-mcp-server
+  npx radix-mcp-server --library themes
+  npx radix-mcp-server --library primitives --github-api-key ghp_your_token_here
+  npx radix-mcp-server -l colors -g ghp_your_token_here
+  npx radix-mcp-server -l all
 
 Environment Variables:
   GITHUB_PERSONAL_ACCESS_TOKEN    Alternative way to provide GitHub token
-  FRAMEWORK                       Framework to use: 'react' or 'svelte' (default: react)
+  RADIX_LIBRARY                   Library to use: 'themes', 'primitives', 'colors', or 'all' (default: all)
   LOG_LEVEL                       Log level (debug, info, warn, error) - default: info
 
-For more information, visit: https://github.com/Jpisnice/shadcn-ui-mcp-server
+For more information, visit: https://github.com/gianpieropuleo/radix-mcp-server
 `);
     process.exit(0);
   }
@@ -73,11 +73,30 @@ For more information, visit: https://github.com/Jpisnice/shadcn-ui-mcp-server
       
       const packageContent = fs.readFileSync(packagePath, 'utf8');
       const packageJson = JSON.parse(packageContent);
-      console.log(`shadcn-ui-mcp-server v${packageJson.version}`);
+      console.log(`radix-mcp-server v${packageJson.version}`);
     } catch (error) {
-      console.log('shadcn-ui-mcp-server v1.0.2');
+      console.log('radix-mcp-server v1.0.0');
     }
     process.exit(0);
+  }
+
+  // Library selection
+  const libraryIndex = args.findIndex(arg => arg === '--library' || arg === '-l');
+  let library: 'themes' | 'primitives' | 'colors' | 'all' = 'all';
+  
+  if (libraryIndex !== -1 && args[libraryIndex + 1]) {
+    const libraryArg = args[libraryIndex + 1].toLowerCase();
+    if (['themes', 'primitives', 'colors', 'all'].includes(libraryArg)) {
+      library = libraryArg as 'themes' | 'primitives' | 'colors' | 'all';
+    } else {
+      console.error(`Invalid library: ${libraryArg}. Must be 'themes', 'primitives', 'colors', or 'all'`);
+      process.exit(1);
+    }
+  } else if (process.env.RADIX_LIBRARY) {
+    const envLibrary = process.env.RADIX_LIBRARY.toLowerCase();
+    if (['themes', 'primitives', 'colors', 'all'].includes(envLibrary)) {
+      library = envLibrary as 'themes' | 'primitives' | 'colors' | 'all';
+    }
   }
 
   // GitHub API key
@@ -90,7 +109,131 @@ For more information, visit: https://github.com/Jpisnice/shadcn-ui-mcp-server
     githubApiKey = process.env.GITHUB_PERSONAL_ACCESS_TOKEN;
   }
 
-  return { githubApiKey };
+  return { library, githubApiKey };
+}
+
+/**
+ * Get tools configuration based on library selection
+ */
+function getToolsForLibrary(library: 'themes' | 'primitives' | 'colors' | 'all') {
+  const allTools = {
+    "themes_list_components": {
+      description: "Get all available Radix Themes components",
+      inputSchema: {
+        type: "object",
+        properties: {}
+      }
+    },
+    "themes_get_component": {
+      description: "Get the source code for a specific Radix Themes component",
+      inputSchema: {
+        type: "object",
+        properties: {
+          componentName: {
+            type: "string",
+            description: "Name of the Radix Themes component (e.g., \"button\", \"dialog\")"
+          }
+        },
+        required: ["componentName"]
+      }
+    },
+    "themes_get_installation": {
+      description: "Get installation instructions for Radix Themes",
+      inputSchema: {
+        type: "object",
+        properties: {
+          packageManager: {
+            type: "string",
+            description: "Package manager to use (npm, yarn, pnpm)",
+            enum: ["npm", "yarn", "pnpm"]
+          }
+        }
+      }
+    },
+    "primitives_list_components": {
+      description: "Get all available Radix Primitives components",
+      inputSchema: {
+        type: "object",
+        properties: {}
+      }
+    },
+    "primitives_get_component": {
+      description: "Get the source code for a specific Radix Primitives component",
+      inputSchema: {
+        type: "object",
+        properties: {
+          componentName: {
+            type: "string",
+            description: "Name of the Radix Primitives component (e.g., \"accordion\", \"dialog\")"
+          }
+        },
+        required: ["componentName"]
+      }
+    },
+    "primitives_get_installation": {
+      description: "Get installation instructions for Radix Primitives",
+      inputSchema: {
+        type: "object",
+        properties: {
+          componentName: {
+            type: "string",
+            description: "Specific component to get installation for"
+          }
+        }
+      }
+    },
+    "colors_list_scales": {
+      description: "Get all available Radix Colors color scales",
+      inputSchema: {
+        type: "object",
+        properties: {}
+      }
+    },
+    "colors_get_scale": {
+      description: "Get a specific Radix Colors color scale definition",
+      inputSchema: {
+        type: "object",
+        properties: {
+          scaleName: {
+            type: "string",
+            description: "Name of the color scale (e.g., \"blue\", \"red\", \"gray\")"
+          }
+        },
+        required: ["scaleName"]
+      }
+    },
+    "colors_get_installation": {
+      description: "Get installation instructions for Radix Colors",
+      inputSchema: {
+        type: "object",
+        properties: {}
+      }
+    }
+  };
+
+  switch (library) {
+    case 'themes':
+      return {
+        "themes_list_components": allTools["themes_list_components"],
+        "themes_get_component": allTools["themes_get_component"],
+        "themes_get_installation": allTools["themes_get_installation"]
+      };
+    case 'primitives':
+      return {
+        "primitives_list_components": allTools["primitives_list_components"],
+        "primitives_get_component": allTools["primitives_get_component"],
+        "primitives_get_installation": allTools["primitives_get_installation"]
+      };
+    case 'colors':
+      return {
+        "colors_list_scales": allTools["colors_list_scales"],
+        "colors_get_scale": allTools["colors_get_scale"],
+        "colors_get_installation": allTools["colors_get_installation"]
+      };
+    case 'all':
+    default:
+      return allTools;
+  }
 }
 
 /**
@@ -98,19 +241,18 @@ For more information, visit: https://github.com/Jpisnice/shadcn-ui-mcp-server
  */
 async function main() {
   try {
-    logInfo('Starting Shadcn UI v4 MCP Server...');
+    logInfo('Starting Radix UI MCP Server...');
 
-    const { githubApiKey } = await parseArgs();
+    const { library, githubApiKey } = await parseArgs();
+    
+    logInfo(`Library selection: ${library}`);
 
-    // Validate and log framework selection
-    validateFrameworkSelection();
-
-    // Get the appropriate axios implementation based on framework
-    const axios = await getAxiosImplementation();
+    // Get the http implementation (no framework selection needed for Radix)
+    const { http } = await import('./utils/http.js');
 
     // Configure GitHub API key if provided
     if (githubApiKey) {
-      axios.setGitHubApiKey(githubApiKey);
+      http.setGitHubApiKey(githubApiKey);
       logInfo('GitHub API configured with token');
     } else {
       logWarning('No GitHub API key provided. Rate limited to 60 requests/hour.');
@@ -120,180 +262,12 @@ async function main() {
     // Following MCP SDK 1.16.0 best practices
     const server = new Server(
       {
-        name: "shadcn-ui-mcp-server",
-        version: "1.0.2",
+        name: "radix-mcp-server",
+        version: "1.0.0",
       },
       {
         capabilities: {
-          resources: {
-            "get_components": {
-              description: "List of available shadcn/ui components that can be used in the project",
-              uri: "resource:get_components",
-              contentType: "text/plain"
-            },
-            "get_install_script_for_component": {
-              description: "Generate installation script for a specific shadcn/ui component based on package manager",
-              uriTemplate: "resource-template:get_install_script_for_component?packageManager={packageManager}&component={component}",
-              contentType: "text/plain"
-            },
-            "get_installation_guide": {
-              description: "Get the installation guide for shadcn/ui based on build tool and package manager",
-              uriTemplate: "resource-template:get_installation_guide?buildTool={buildTool}&packageManager={packageManager}",
-              contentType: "text/plain"
-            }
-          },
-          prompts: {
-            "component_usage": {
-              description: "Get usage examples for a specific component",
-              arguments: {
-                componentName: {
-                  type: "string",
-                  description: "Name of the component to get usage for"
-                }
-              }
-            },
-            "component_search": {
-              description: "Search for components by name or description",
-              arguments: {
-                query: {
-                  type: "string",
-                  description: "Search query"
-                }
-              }
-            },
-            "component_comparison": {
-              description: "Compare two components side by side",
-              arguments: {
-                component1: {
-                  type: "string",
-                  description: "First component name"
-                },
-                component2: {
-                  type: "string",
-                  description: "Second component name"
-                }
-              }
-            },
-            "component_recommendation": {
-              description: "Get component recommendations based on use case",
-              arguments: {
-                useCase: {
-                  type: "string",
-                  description: "Use case description"
-                }
-              }
-            },
-            "component_tutorial": {
-              description: "Get a step-by-step tutorial for using a component",
-              arguments: {
-                componentName: {
-                  type: "string",
-                  description: "Name of the component for tutorial"
-                }
-              }
-            }
-          },
-          tools: {
-            "get_component": {
-              description: "Get the source code for a specific shadcn/ui v4 component",
-              inputSchema: {
-                type: "object",
-                properties: {
-                  componentName: {
-                    type: "string",
-                    description: "Name of the shadcn/ui component (e.g., \"accordion\", \"button\")"
-                  }
-                },
-                required: ["componentName"]
-              }
-            },
-            "get_component_demo": {
-              description: "Get demo code illustrating how a shadcn/ui v4 component should be used",
-              inputSchema: {
-                type: "object",
-                properties: {
-                  componentName: {
-                    type: "string",
-                    description: "Name of the shadcn/ui component (e.g., \"accordion\", \"button\")"
-                  }
-                },
-                required: ["componentName"]
-              }
-            },
-            "list_components": {
-              description: "Get all available shadcn/ui v4 components",
-              inputSchema: {
-                type: "object",
-                properties: {}
-              }
-            },
-            "get_component_metadata": {
-              description: "Get metadata for a specific shadcn/ui v4 component",
-              inputSchema: {
-                type: "object",
-                properties: {
-                  componentName: {
-                    type: "string",
-                    description: "Name of the shadcn/ui component (e.g., \"accordion\", \"button\")"
-                  }
-                },
-                required: ["componentName"]
-              }
-            },
-            "get_directory_structure": {
-              description: "Get the directory structure of the shadcn-ui v4 repository",
-              inputSchema: {
-                type: "object",
-                properties: {
-                  path: {
-                    type: "string",
-                    description: "Path within the repository (default: v4 registry)"
-                  },
-                  owner: {
-                    type: "string",
-                    description: "Repository owner (default: \"shadcn-ui\")"
-                  },
-                  repo: {
-                    type: "string",
-                    description: "Repository name (default: \"ui\")"
-                  },
-                  branch: {
-                    type: "string",
-                    description: "Branch name (default: \"main\")"
-                  }
-                }
-              }
-            },
-            "get_block": {
-              description: "Get source code for a specific shadcn/ui v4 block (e.g., calendar-01, dashboard-01)",
-              inputSchema: {
-                type: "object",
-                properties: {
-                  blockName: {
-                    type: "string",
-                    description: "Name of the block (e.g., \"calendar-01\", \"dashboard-01\", \"login-02\")"
-                  },
-                  includeComponents: {
-                    type: "boolean",
-                    description: "Whether to include component files for complex blocks (default: true)"
-                  }
-                },
-                required: ["blockName"]
-              }
-            },
-            "list_blocks": {
-              description: "Get all available shadcn/ui v4 blocks with categorization",
-              inputSchema: {
-                type: "object",
-                properties: {
-                  category: {
-                    type: "string",
-                    description: "Filter by category (calendar, dashboard, login, sidebar, products)"
-                  }
-                }
-              }
-            }
-          }
+          tools: getToolsForLibrary(library)
         }
       }
     );
