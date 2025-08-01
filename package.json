@@ -58,7 +58,6 @@
     "cheerio": "^1.0.0",
     "zod": "^3.24.2",
     "winston": "^3.15.0",
-    "joi": "^17.13.3",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

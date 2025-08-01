@@ -1,109 +1,53 @@
-import Joi from 'joi';
-
+import { z } from 'zod';
 
 /**
- * Validation schemas for different request types
+ * Validation schemas for different request types using Zod
  */
 export const validationSchemas = {
-  // Component-related schemas
-  componentName: Joi.object({
-    componentName: Joi.string().required().min(1).max(100)
-      .description('Name of the Radix UI component')
+  // Component-related schemas for Radix UI tools
+  componentName: z.object({
+    componentName: z.string().min(1, "Component name is required").max(100)
   }),
 
-  // Search schemas
-  searchQuery: Joi.object({
-    query: Joi.string().required().min(1).max(500)
-      .description('Search query string')
+  // Scale name for Radix Colors
+  scaleName: z.object({
+    scaleName: z.string().min(1, "Scale name is required").max(100)
   }),
 
-  // Optional query schemas
-  optionalQuery: Joi.object({
-    query: Joi.string().optional().max(500)
-      .description('Optional query string')
+  // Package manager selection
+  packageManager: z.object({
+    packageManager: z.enum(['npm', 'yarn', 'pnpm']).optional()
   }),
 
-  // Block schemas
-  blockQuery: Joi.object({
-    query: Joi.string().optional().max(500)
-      .description('Optional search query'),
-    category: Joi.string().optional().max(100)
-      .description('Optional category filter')
+  // Optional component name (for primitive installation)
+  optionalComponentName: z.object({
+    componentName: z.string().min(1).max(100).optional()
   }),
 
-  // Directory structure schemas
-  directoryStructure: Joi.object({
-    path: Joi.string().optional().max(500)
-      .description('Path within the repository'),
-    owner: Joi.string().optional().max(100)
-      .description('Repository owner'),
-    repo: Joi.string().optional().max(100)
-      .description('Repository name'),
-    branch: Joi.string().optional().max(100)
-      .description('Branch name')
-  }),
-
-  // Block schemas
-  blockRequest: Joi.object({
-    blockName: Joi.string().required().min(1).max(200)
-      .description('Name of the block'),
-    includeComponents: Joi.boolean().optional()
-      .description('Whether to include component files')
-  }),
-
-  // Resource schemas
-  resourceRequest: Joi.object({
-    uri: Joi.string().required().min(1).max(1000)
-      .description('Resource URI')
-  }),
-
-  // Prompt schemas
-  promptRequest: Joi.object({
-    name: Joi.string().required().min(1).max(200)
-      .description('Prompt name'),
-    arguments: Joi.object().optional()
-      .description('Prompt arguments')
-  }),
-
-  // Tool schemas
-  toolRequest: Joi.object({
-    name: Joi.string().required().min(1).max(200)
-      .description('Tool name'),
-    arguments: Joi.object().optional()
-      .description('Tool arguments')
-  })
+  // Empty object for tools with no parameters
+  empty: z.object({})
 };
 
 /**
- * Validate request parameters against a schema
- * @param schema Joi schema to validate against
+ * Validate request parameters against a Zod schema
+ * @param schema Zod schema to validate against
  * @param params Parameters to validate
  * @returns Validated parameters
  * @throws ValidationError if validation fails
  */
 export function validateRequest<T>(
-  schema: Joi.ObjectSchema,
+  schema: z.ZodSchema<T>,
   params: any
 ): T {
   try {
-    const { error, value } = schema.validate(params, {
-      abortEarly: false,
-      stripUnknown: true,
-      allowUnknown: false
-    });
-
-    if (error) {
-      const errorMessages = error.details.map(detail => 
-        `${detail.path.join('.')}: ${detail.message}`
+    return schema.parse(params);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const errorMessages = error.errors.map(err => 
+        `${err.path.join('.')}: ${err.message}`
       ).join(', ');
       
       throw new Error(`Validation failed: ${errorMessages}`);
-    }
-
-    return value as T;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
     }
     throw new Error(`Unexpected validation error: ${error instanceof Error ? error.message : String(error)}`);
   }
@@ -112,37 +56,24 @@ export function validateRequest<T>(
 /**
  * Get validation schema for a specific method
  * @param method Method name
- * @returns Joi schema or undefined
+ * @returns Zod schema or undefined
  */
-export function getValidationSchema(method: string): Joi.ObjectSchema | undefined {
-  const schemaMap: Record<string, Joi.ObjectSchema> = {
-    // Component methods
-    'get_component': validationSchemas.componentName,
-    'get_component_demo': validationSchemas.componentName,
-    'get_component_metadata': validationSchemas.componentName,
-    'get_component_details': validationSchemas.componentName,
-    'get_examples': validationSchemas.componentName,
-    'get_usage': validationSchemas.componentName,
+export function getValidationSchema(method: string): z.ZodSchema<any> | undefined {
+  const schemaMap: Record<string, z.ZodSchema<any>> = {
+    // Radix Themes tools
+    'themes_get_component': validationSchemas.componentName,
+    'themes_get_installation': validationSchemas.packageManager,
+    'themes_list_components': validationSchemas.empty,
     
-    // Search methods
-    'search_components': validationSchemas.searchQuery,
-    'get_themes': validationSchemas.optionalQuery,
-    'get_blocks': validationSchemas.blockQuery,
+    // Radix Primitives tools  
+    'primitives_get_component': validationSchemas.componentName,
+    'primitives_get_installation': validationSchemas.optionalComponentName,
+    'primitives_list_components': validationSchemas.empty,
     
-    // Directory methods
-    'get_directory_structure': validationSchemas.directoryStructure,
-    
-    // Block methods
-    'get_block': validationSchemas.blockRequest,
-    
-    // Resource methods
-    'read_resource': validationSchemas.resourceRequest,
-    
-    // Prompt methods
-    'get_prompt': validationSchemas.promptRequest,
-    
-    // Tool methods
-    'call_tool': validationSchemas.toolRequest
+    // Radix Colors tools
+    'colors_get_scale': validationSchemas.scaleName,
+    'colors_get_installation': validationSchemas.empty,
+    'colors_list_scales': validationSchemas.empty
   };
 
   return schemaMap[method];
@@ -150,7 +81,7 @@ export function getValidationSchema(method: string): Joi.ObjectSchema | undefine
 
 /**
  * Validate and sanitize input parameters
- * @param method Method name
+ * @param method Method name  
  * @param params Parameters to validate
  * @returns Validated and sanitized parameters
  */
@@ -166,4 +97,4 @@ export function validateAndSanitizeParams<T>(
   }
 
   return validateRequest<T>(schema, params);
-} 
+}
