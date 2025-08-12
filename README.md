@@ -14,8 +14,8 @@ A lightweight Model Context Protocol (MCP) server that provides AI assistants wi
 - **Radix Colors**: Retrieve semantic color scales with light/dark mode support
 - **Component Source Code**: Get the latest Radix UI component TypeScript source
 - **Installation Guides**: Dynamic installation instructions for all package managers
-- **GitHub API Integration**: Efficient caching and intelligent rate limit handling
-- **Lightweight**: Built with Ky HTTP client for minimal bundle size
+- **GitHub API Integration**: Intelligent caching with p-memoize and respectful rate limiting
+- **Lightweight**: Built with modern Sindre Sorhus packages (ky, p-limit, p-memoize) for minimal bundle size
 
 ## 📦 Quick Start
 
@@ -352,6 +352,33 @@ The MCP server provides these tools for AI assistants:
   "arguments": {}
 }
 ```
+
+## ⚡ Architecture & Performance
+
+### Modern, Lightweight Stack
+
+This MCP server is built with a carefully curated set of modern, lightweight packages:
+
+- **[ky](https://github.com/sindresorhus/ky)** - Elegant HTTP client (replaces heavier alternatives)
+- **[p-limit](https://github.com/sindresorhus/p-limit)** - Concurrency control for respectful API usage
+- **[p-memoize](https://github.com/sindresorhus/p-memoize)** - Intelligent function memoization with TTL
+- **[expiry-map](https://github.com/sindresorhus/expiry-map)** - TTL cache support for automatic expiration
+- **[pino](https://github.com/pinojs/pino)** - Fast, structured logging
+- **[zod](https://github.com/colinhacks/zod)** - Runtime type validation
+
+### Smart Caching Strategy
+
+- **24-hour TTL**: All GitHub API responses are cached for 24 hours
+- **Function-level memoization**: Each API function is individually memoized
+- **Automatic expiration**: Cache entries expire automatically, preventing stale data
+- **Memory efficient**: Only active data is kept in memory
+
+### Rate Limiting & API Respect
+
+- **Concurrency control**: Maximum 1 concurrent request to GitHub API
+- **Intelligent batching**: Related requests are batched when possible
+- **Graceful degradation**: Fallback to cached data when rate limits hit
+- **Token support**: GitHub tokens increase limits from 60 to 5,000 requests/hour
 
 ## 🐛 Troubleshooting
 
