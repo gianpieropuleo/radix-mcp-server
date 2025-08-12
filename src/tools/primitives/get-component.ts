@@ -1,4 +1,9 @@
 import { z } from "zod";
+import {
+  ComponentType,
+  GetComponentResult,
+  Library,
+} from "../../types/results.js";
 import { http } from "../../utils/http.js";
 import { logError, logInfo } from "../../utils/logger.js";
 
@@ -17,20 +22,15 @@ export async function handleGetPrimitivesComponent(
     const { componentName } = params;
     logInfo(`Fetching Radix Primitives component: ${componentName}`);
 
-    const sourceCode = await http.getPrimitivesComponentSource(componentName);
     const usage = await http.getPrimitivesUsage(componentName);
+    const source = await http.getPrimitivesComponentSource(componentName);
 
-    const result = {
-      library: "primitives",
+    const result: GetComponentResult = {
+      library: Library.Primitives,
       componentName,
       packageName: `@radix-ui/react-${componentName}`,
-      type: "unstyled",
-      source: sourceCode,
-      installation: {
-        npm: `npm install @radix-ui/react-${componentName}`,
-        yarn: `yarn add @radix-ui/react-${componentName}`,
-        pnpm: `pnpm add @radix-ui/react-${componentName}`,
-      },
+      type: ComponentType.Unstyled,
+      source,
       usage,
     };
 

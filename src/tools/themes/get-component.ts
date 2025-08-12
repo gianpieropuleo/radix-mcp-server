@@ -1,4 +1,10 @@
 import { z } from "zod";
+import {
+  ComponentType,
+  GetComponentResult,
+  Library,
+  Package,
+} from "../../types/results.js";
 import { http } from "../../utils/http.js";
 import { logError, logInfo } from "../../utils/logger.js";
 
@@ -17,20 +23,15 @@ export async function handleGetThemesComponent(
     const { componentName } = params;
     logInfo(`Fetching Radix Themes component: ${componentName}`);
 
-    const sourceCode = await http.getThemesComponentSource(componentName);
     const usage = await http.getThemesUsage(componentName);
+    const source = await http.getThemesComponentSource(componentName);
 
-    const result = {
-      library: "themes",
+    const result: GetComponentResult = {
+      library: Library.Themes,
       componentName,
-      packageName: "@radix-ui/themes",
-      type: "styled",
-      source: sourceCode,
-      installation: {
-        npm: "npm install @radix-ui/themes",
-        yarn: "yarn add @radix-ui/themes",
-        pnpm: "pnpm add @radix-ui/themes",
-      },
+      packageName: Package.Themes,
+      type: ComponentType.Styled,
+      source,
       usage,
     };
 

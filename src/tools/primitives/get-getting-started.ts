@@ -1,22 +1,16 @@
-import { z } from "zod";
+import { GettingStartedResult, Library } from "../../types/results.js";
 import { http } from "../../utils/http.js";
 import { logInfo } from "../../utils/logger.js";
 
-export const schema = z.object({});
-
-export interface GetPrimitivesGettingStartedParams {}
-
-export async function handleGetPrimitivesGettingStarted(
-  params: GetPrimitivesGettingStartedParams
-) {
+export async function handleGetPrimitivesGettingStarted() {
   try {
     logInfo("Fetching official Radix Primitives getting started guide...");
 
     // Fetch the official getting-started guide from Radix UI website
     const gettingStartedContent = await http.getPrimitivesGettingStarted();
 
-    const result = {
-      library: "primitives",
+    const result: GettingStartedResult = {
+      library: Library.Primitives,
       title: "Radix Primitives - Getting Started",
       description: "Official getting started guide for Radix Primitives",
       source:

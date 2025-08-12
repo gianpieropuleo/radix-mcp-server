@@ -468,7 +468,7 @@ async function getColorsGettingStarted(): Promise<string> {
  * Fetch Radix Colors documentation files and merge them into a single object (internal implementation)
  * @returns Promise with merged documentation object
  */
-async function _getColorsDocumentation(): Promise<Record<string, string>> {
+async function _getColorsDocumentation(): Promise<string> {
   const documentationFiles = [
     "overview/usage.mdx",
     "overview/custom-palettes.mdx",
@@ -498,7 +498,9 @@ async function _getColorsDocumentation(): Promise<Record<string, string>> {
     }
   }
 
-  return documentation;
+  const consolidatedDocumentation = Object.values(documentation).join("\n\n");
+
+  return consolidatedDocumentation;
 }
 
 /**

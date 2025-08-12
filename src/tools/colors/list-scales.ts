@@ -1,21 +1,26 @@
-import { z } from "zod";
+import {
+  ComponentType,
+  Library,
+  ListComponentsResult,
+  Package,
+} from "../../types/results.js";
 import { http } from "../../utils/http.js";
 import { logError, logInfo } from "../../utils/logger.js";
 
-export const schema = z.object({});
-
-export interface ListColorsScalesParams {}
-
-export async function handleListColorsScales(params: ListColorsScalesParams) {
+export async function handleListColorsScales() {
   try {
     logInfo("Fetching Radix Colors scales...");
 
     const scales = await http.getColorsScaleNames();
 
-    const result = {
-      library: "colors",
+    const result: ListComponentsResult = {
+      library: Library.Colors,
       total: scales.length,
-      scales: scales,
+      components: scales.map((scale) => ({
+        name: scale,
+        packageName: Package.Colors,
+        type: ComponentType.ColorScale,
+      })),
       note: "Use get-scale tool with a specific scale name to get detailed color values and usage information",
     };
 

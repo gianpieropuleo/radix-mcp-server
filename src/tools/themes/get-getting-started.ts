@@ -1,22 +1,16 @@
-import { z } from "zod";
+import { GettingStartedResult, Library } from "../../types/results.js";
 import { http } from "../../utils/http.js";
 import { logInfo } from "../../utils/logger.js";
 
-export const schema = z.object({});
-
-export interface GetThemesGettingStartedParams {}
-
-export async function handleGetThemesGettingStarted(
-  params: GetThemesGettingStartedParams
-) {
+export async function handleGetThemesGettingStarted() {
   try {
     logInfo("Fetching official Radix Themes getting started guide...");
 
     // Fetch the official getting-started guide from Radix UI website
     const gettingStartedContent = await http.getThemesGettingStarted();
 
-    const result = {
-      library: "themes",
+    const result: GettingStartedResult = {
+      library: Library.Themes,
       title: "Radix Themes - Getting Started",
       description: "Official getting started guide for Radix Themes",
       source:
