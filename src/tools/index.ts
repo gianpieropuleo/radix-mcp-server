@@ -1,15 +1,15 @@
 // Radix Themes tools
 import { handleGetThemesComponent } from "./themes/get-component.js";
-import { handleGetThemesInstallation } from "./themes/get-installation.js";
+import { handleGetThemesGettingStarted } from "./themes/get-getting-started.js";
 import { handleListThemesComponents } from "./themes/list-components.js";
 
 // Radix Primitives tools
 import { handleGetPrimitivesComponent } from "./primitives/get-component.js";
-import { handleGetPrimitivesInstallation } from "./primitives/get-installation.js";
+import { handleGetPrimitivesGettingStarted } from "./primitives/get-getting-started.js";
 import { handleListPrimitivesComponents } from "./primitives/list-components.js";
 
 // Radix Colors tools
-import { handleGetColorsInstallation } from "./colors/get-installation.js";
+import { handleGetColorsGettingStarted } from "./colors/get-getting-started.js";
 import { handleGetColorsScale } from "./colors/get-scale.js";
 import { handleListColorsScales } from "./colors/list-scales.js";
 
@@ -17,17 +17,17 @@ export const toolHandlers = {
   // Radix Themes tools
   themes_list_components: handleListThemesComponents,
   themes_get_component: handleGetThemesComponent,
-  themes_get_installation: handleGetThemesInstallation,
+  themes_get_getting_started: handleGetThemesGettingStarted,
 
   // Radix Primitives tools
   primitives_list_components: handleListPrimitivesComponents,
   primitives_get_component: handleGetPrimitivesComponent,
-  primitives_get_installation: handleGetPrimitivesInstallation,
+  primitives_get_getting_started: handleGetPrimitivesGettingStarted,
 
   // Radix Colors tools
   colors_list_scales: handleListColorsScales,
   colors_get_scale: handleGetColorsScale,
-  colors_get_installation: handleGetColorsInstallation,
+  colors_get_getting_started: handleGetColorsGettingStarted,
 };
 
 // Export tools for dynamic registration based on library selection
@@ -57,18 +57,12 @@ export const tools = {
       additionalProperties: false,
     },
   },
-  themes_get_installation: {
-    name: "themes_get_installation",
-    description: "Get installation instructions for Radix Themes",
+  themes_get_getting_started: {
+    name: "themes_get_getting_started",
+    description: "Get official getting started guide for Radix Themes",
     inputSchema: {
       type: "object",
-      properties: {
-        packageManager: {
-          type: "string",
-          enum: ["npm", "yarn", "pnpm"],
-          description: "Package manager to use for installation",
-        },
-      },
+      properties: {},
       additionalProperties: false,
     },
   },
@@ -99,18 +93,12 @@ export const tools = {
       additionalProperties: false,
     },
   },
-  primitives_get_installation: {
-    name: "primitives_get_installation",
-    description: "Get installation instructions for Radix Primitives",
+  primitives_get_getting_started: {
+    name: "primitives_get_getting_started",
+    description: "Get official getting started guide for Radix Primitives",
     inputSchema: {
       type: "object",
-      properties: {
-        componentName: {
-          type: "string",
-          description:
-            "Optional component name for specific installation instructions",
-        },
-      },
+      properties: {},
       additionalProperties: false,
     },
   },
@@ -140,9 +128,9 @@ export const tools = {
       additionalProperties: false,
     },
   },
-  colors_get_installation: {
-    name: "colors_get_installation",
-    description: "Get installation instructions for Radix Colors",
+  colors_get_getting_started: {
+    name: "colors_get_getting_started",
+    description: "Get official installation guide for Radix Colors",
     inputSchema: {
       type: "object",
       properties: {},

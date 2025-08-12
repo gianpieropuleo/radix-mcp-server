@@ -140,17 +140,11 @@ function getToolsForLibrary(
         required: ["componentName"],
       },
     },
-    themes_get_installation: {
-      description: "Get installation instructions for Radix Themes",
+    themes_get_getting_started: {
+      description: "Get official getting started guide for Radix Themes",
       inputSchema: {
         type: "object",
-        properties: {
-          packageManager: {
-            type: "string",
-            description: "Package manager to use (npm, yarn, pnpm)",
-            enum: ["npm", "yarn", "pnpm"],
-          },
-        },
+        properties: {},
       },
     },
     primitives_list_components: {
@@ -175,16 +169,11 @@ function getToolsForLibrary(
         required: ["componentName"],
       },
     },
-    primitives_get_installation: {
-      description: "Get installation instructions for Radix Primitives",
+    primitives_get_getting_started: {
+      description: "Get official getting started guide for Radix Primitives",
       inputSchema: {
         type: "object",
-        properties: {
-          componentName: {
-            type: "string",
-            description: "Specific component to get installation for",
-          },
-        },
+        properties: {},
       },
     },
     colors_list_scales: {
@@ -208,8 +197,8 @@ function getToolsForLibrary(
         required: ["scaleName"],
       },
     },
-    colors_get_installation: {
-      description: "Get installation instructions for Radix Colors",
+    colors_get_getting_started: {
+      description: "Get official installation guide for Radix Colors",
       inputSchema: {
         type: "object",
         properties: {},
@@ -222,19 +211,20 @@ function getToolsForLibrary(
       return {
         themes_list_components: allTools["themes_list_components"],
         themes_get_component: allTools["themes_get_component"],
-        themes_get_installation: allTools["themes_get_installation"],
+        themes_get_getting_started: allTools["themes_get_getting_started"],
       };
     case "primitives":
       return {
         primitives_list_components: allTools["primitives_list_components"],
         primitives_get_component: allTools["primitives_get_component"],
-        primitives_get_installation: allTools["primitives_get_installation"],
+        primitives_get_getting_started:
+          allTools["primitives_get_getting_started"],
       };
     case "colors":
       return {
         colors_list_scales: allTools["colors_list_scales"],
         colors_get_scale: allTools["colors_get_scale"],
-        colors_get_installation: allTools["colors_get_installation"],
+        colors_get_getting_started: allTools["colors_get_getting_started"],
       };
     case "all":
     default:

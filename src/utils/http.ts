@@ -426,6 +426,45 @@ async function getThemesUsage(componentName: string): Promise<string> {
 }
 
 /**
+ * Fetch Radix Themes getting started guide from the official website
+ * @returns Promise with getting started guide content
+ */
+async function getThemesGettingStarted(): Promise<string> {
+  const response = await githubLimit(() =>
+    ky.get(
+      `https://raw.githubusercontent.com/${RADIX_OWNER}/website/${REPO_BRANCH}/data/${THEMES_REPO}/docs/overview/getting-started.mdx`
+    )
+  );
+  return await response.text();
+}
+
+/**
+ * Fetch Radix Primitives getting started guide from the official website
+ * @returns Promise with getting started guide content
+ */
+async function getPrimitivesGettingStarted(): Promise<string> {
+  const response = await githubLimit(() =>
+    ky.get(
+      `https://raw.githubusercontent.com/${RADIX_OWNER}/website/${REPO_BRANCH}/data/${PRIMITIVES_REPO}/docs/overview/getting-started.mdx`
+    )
+  );
+  return await response.text();
+}
+
+/**
+ * Fetch Radix Colors installation guide from the official website
+ * @returns Promise with installation guide content
+ */
+async function getColorsGettingStarted(): Promise<string> {
+  const response = await githubLimit(() =>
+    ky.get(
+      `https://raw.githubusercontent.com/${RADIX_OWNER}/website/${REPO_BRANCH}/data/colors/docs/overview/installation.mdx`
+    )
+  );
+  return await response.text();
+}
+
+/**
  * Fetch Radix Colors documentation files and merge them into a single object (internal implementation)
  * @returns Promise with merged documentation object
  */
@@ -699,6 +738,9 @@ export const http = {
   getAvailableComponents,
   setGitHubApiKey,
   getPrimitivesUsage,
+  getThemesGettingStarted,
+  getPrimitivesGettingStarted,
+  getColorsGettingStarted,
   getThemesUsage,
   getColorsDocumentation,
   getColorsScaleSource,
