@@ -23,9 +23,9 @@ import {
   LIBRARY_OPTION_DESCRIPTION,
   PROGRAM_DESCRIPTION,
   PROGRAM_NAME,
-} from "./lib/commands.js";
-import { HELP_EXAMPLES } from "./lib/help.js";
-import { startMCPServer } from "./server.js";
+} from "./cli/commands.js";
+import { HELP_EXAMPLES } from "./cli/help.js";
+import { startMCPServer } from "./mcp/server.js";
 import { Library } from "./types/results.js";
 import { logError } from "./utils/logger.js";
 

@@ -4,8 +4,8 @@
  * Bridges the new library architecture with the Model Context Protocol (MCP) requirements.
  * Generates MCP-compatible tool handlers and definitions from library configurations.
  */
+import { getLibraryOperations } from "../core/registry.js";
 import { Library } from "../types/results.js";
-import { getLibraryOperations } from "./registry.js";
 
 /**
  * Generate MCP-compatible tool handlers from library operations

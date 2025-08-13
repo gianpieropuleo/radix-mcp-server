@@ -11,9 +11,13 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { toolHandlers, tools } from "./tools/index.js";
-import { logError, logInfo } from "./utils/logger.js";
-import { validateAndSanitizeParams } from "./utils/validation.js";
+import { logError, logInfo } from "../utils/logger.js";
+import { validateAndSanitizeParams } from "../utils/validation.js";
+import { generateMCPHandlers, generateToolDefinitions } from "./adapter.js";
+
+// Generate tool handlers and definitions
+const toolHandlers = generateMCPHandlers();
+const tools = generateToolDefinitions();
 
 /**
  * Wrapper function to handle requests with simple error handling

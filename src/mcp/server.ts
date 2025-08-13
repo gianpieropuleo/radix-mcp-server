@@ -6,12 +6,12 @@
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { DEFAULT_VERSION, PROGRAM_NAME } from "../cli/commands.js";
+import { Action } from "../types/actions.js";
+import { Library } from "../types/results.js";
+import { logError, logInfo, logWarning } from "../utils/logger.js";
 import { setupHandlers } from "./handler.js";
-import { DEFAULT_VERSION, PROGRAM_NAME } from "./lib/commands.js";
-import { createTool } from "./lib/tools.js";
-import { Action } from "./types/actions.js";
-import { Library } from "./types/results.js";
-import { logError, logInfo, logWarning } from "./utils/logger.js";
+import { createTool } from "./tools.js";
 
 /**
  * Server configuration interface
@@ -71,7 +71,7 @@ async function getVersion(): Promise<string> {
  * Configure HTTP client with GitHub API key if provided
  */
 async function configureHttpClient(githubApiKey?: string | null) {
-  const { http } = await import("./utils/http.js");
+  const { http } = await import("../utils/http.js");
 
   if (githubApiKey) {
     http.setGitHubApiKey(githubApiKey);
