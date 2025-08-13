@@ -2,6 +2,7 @@ export enum Library {
   Themes = "themes",
   Primitives = "primitives",
   Colors = "colors",
+  All = "all",
 }
 
 export enum ComponentType {

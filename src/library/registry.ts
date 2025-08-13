@@ -6,11 +6,13 @@ import { createLibraryOperations } from "./operations.js";
  * Functional equivalent of the Factory + Singleton patterns
  */
 const operationsCache = new Map<
-  Library,
+  Exclude<Library, Library.All>,
   ReturnType<typeof createLibraryOperations>
 >();
 
-export const getLibraryOperations = (library: Library) => {
+export const getLibraryOperations = (
+  library: Exclude<Library, Library.All>
+) => {
   if (!operationsCache.has(library)) {
     operationsCache.set(library, createLibraryOperations(library));
   }

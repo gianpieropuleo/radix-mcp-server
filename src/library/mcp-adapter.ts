@@ -5,7 +5,6 @@
  * Generates MCP-compatible tool handlers and definitions from library configurations.
  */
 import { Library } from "../types/results.js";
-import { libraryConfigs } from "./config.js";
 import { getLibraryOperations } from "./registry.js";
 
 /**
@@ -14,7 +13,11 @@ import { getLibraryOperations } from "./registry.js";
 export const generateMCPHandlers = () => {
   const handlers: Record<string, (params?: any) => Promise<any>> = {};
 
-  for (const library of [Library.Themes, Library.Primitives, Library.Colors]) {
+  for (const library of [
+    Library.Themes,
+    Library.Primitives,
+    Library.Colors,
+  ] as const) {
     const operations = getLibraryOperations(library);
     const libraryKey = library.toLowerCase();
 
@@ -53,8 +56,11 @@ export const generateMCPHandlers = () => {
 export const generateToolDefinitions = () => {
   const tools: Record<string, any> = {};
 
-  for (const library of [Library.Themes, Library.Primitives, Library.Colors]) {
-    const config = libraryConfigs[library];
+  for (const library of [
+    Library.Themes,
+    Library.Primitives,
+    Library.Colors,
+  ] as const) {
     const libraryKey = library.toLowerCase();
     const libraryName = library.charAt(0).toUpperCase() + library.slice(1);
 

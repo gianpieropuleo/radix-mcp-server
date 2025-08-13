@@ -134,7 +134,9 @@ export const createGettingStartedOperation = (config: LibraryConfig) => {
   };
 };
 
-export const createLibraryOperations = (library: Library) => {
+export const createLibraryOperations = (
+  library: Exclude<Library, Library.All>
+) => {
   const config = libraryConfigs[library];
 
   return {

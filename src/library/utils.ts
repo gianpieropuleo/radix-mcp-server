@@ -1,7 +1,9 @@
 import { Library } from "../types/results.js";
 import { getLibraryOperations } from "./registry.js";
 
-export const createLibraryHandler = (library: Library) => {
+export const createLibraryHandler = (
+  library: Exclude<Library, Library.All>
+) => {
   const operations = getLibraryOperations(library);
 
   return {
@@ -16,7 +18,9 @@ export const createLibraryHandler = (library: Library) => {
   };
 };
 
-export const createMultiLibraryHandler = (libraries: Library[]) => {
+export const createMultiLibraryHandler = (
+  libraries: Exclude<Library, Library.All>[]
+) => {
   const handlers = libraries.map((lib) => ({
     library: lib,
     ...createLibraryHandler(lib),

@@ -2,7 +2,7 @@ import { ComponentType, Library, Package } from "../types/results.js";
 import { http } from "../utils/http.js";
 
 export interface LibraryConfig {
-  library: Library;
+  library: Exclude<Library, Library.All>;
   componentType: ComponentType;
 
   fetchAvailableComponents: () => Promise<string[]>;
@@ -19,7 +19,7 @@ export interface LibraryConfig {
   getGettingStartedNote?: () => string;
 }
 
-const createDefaultHooks = (library: Library) => ({
+const createDefaultHooks = (library: Exclude<Library, Library.All>) => ({
   getListComponentsNote: () =>
     "Use get-component tool with a specific component name to get detailed usage information",
 
@@ -40,7 +40,10 @@ const createDefaultHooks = (library: Library) => ({
     "This content is fetched directly from the official Radix UI documentation to ensure it stays up-to-date.",
 });
 
-export const libraryConfigs: Record<Library, LibraryConfig> = {
+export const libraryConfigs: Record<
+  Exclude<Library, Library.All>,
+  LibraryConfig
+> = {
   [Library.Themes]: {
     library: Library.Themes,
     componentType: ComponentType.Styled,
