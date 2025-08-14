@@ -20,5 +20,5 @@ export const getLibraryOperations = (
 };
 
 export const getSupportedLibraries = (): Library[] => {
-  return [Library.Themes, Library.Primitives, Library.Colors];
+  return Object.values(Library).filter((lib) => lib !== Library.All);
 };

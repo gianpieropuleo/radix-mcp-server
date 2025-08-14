@@ -4,3 +4,9 @@ export enum Action {
   GetComponentDocumentation = "get_component_documentation",
   GetGettingStarted = "get_getting_started",
 }
+
+export enum ColorAction {
+  ListScales = "list_scales",
+  GetScale = "get_scale",
+  GetScaleDocumentation = "get_scale_documentation",
+}

@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { Action, ColorAction } from "../types/actions.js";
+import { Library } from "../types/results.js";
 
 /**
  * Validation schemas for different request types using Zod
@@ -64,22 +66,27 @@ export function getValidationSchema(
 ): z.ZodSchema<any> | undefined {
   const schemaMap: Record<string, z.ZodSchema<any>> = {
     // Radix Themes tools
-    themes_get_component_source: validationSchemas.componentName,
-    themes_get_component_documentation: validationSchemas.componentName,
-    themes_get_getting_started: validationSchemas.empty,
-    themes_list_components: validationSchemas.empty,
+    [`${Library.Themes}_${Action.GetComponentSource}`]:
+      validationSchemas.componentName,
+    [`${Library.Themes}_${Action.GetComponentDocumentation}`]:
+      validationSchemas.componentName,
+    [`${Library.Themes}_${Action.GetGettingStarted}`]: validationSchemas.empty,
+    [`${Library.Themes}_${Action.ListComponents}`]: validationSchemas.empty,
 
     // Radix Primitives tools
-    primitives_get_component_source: validationSchemas.componentName,
-    primitives_get_component_documentation: validationSchemas.componentName,
-    primitives_get_getting_started: validationSchemas.empty,
-    primitives_list_components: validationSchemas.empty,
+    [`${Library.Primitives}_${Action.GetComponentSource}`]:
+      validationSchemas.componentName,
+    [`${Library.Primitives}_${Action.GetComponentDocumentation}`]:
+      validationSchemas.componentName,
+    [`${Library.Primitives}_${Action.GetGettingStarted}`]:
+      validationSchemas.empty,
+    [`${Library.Primitives}_${Action.ListComponents}`]: validationSchemas.empty,
 
     // Radix Colors tools
-    colors_get_component_source: validationSchemas.componentName,
-    colors_get_component_documentation: validationSchemas.componentName,
-    colors_get_getting_started: validationSchemas.empty,
-    colors_list_components: validationSchemas.empty,
+    [`${Library.Colors}_${ColorAction.GetScale}`]: validationSchemas.scaleName,
+    [`${Library.Colors}_${ColorAction.GetScaleDocumentation}`]:
+      validationSchemas.scaleName,
+    [`${Library.Colors}_${ColorAction.ListScales}`]: validationSchemas.empty,
   };
 
   return schemaMap[method];

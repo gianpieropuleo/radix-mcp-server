@@ -7,7 +7,7 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { DEFAULT_VERSION, PROGRAM_NAME } from "../cli/commands.js";
-import { Action } from "../types/actions.js";
+import { Action, ColorAction } from "../types/actions.js";
 import { Library } from "../types/results.js";
 import { Tools } from "../types/tools.js";
 import { logError, logInfo, logWarning } from "../utils/logger.js";
@@ -23,6 +23,14 @@ export interface ServerConfig {
 }
 
 function createToolsForLibrary(library: Library): Tools {
+  if (library === Library.Colors) {
+    return {
+      ...createTool(library, ColorAction.ListScales),
+      ...createTool(library, ColorAction.GetScale),
+      ...createTool(library, ColorAction.GetScaleDocumentation),
+    };
+  }
+
   return {
     ...createTool(library, Action.ListComponents),
     ...createTool(library, Action.GetComponentSource),
