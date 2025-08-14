@@ -85,7 +85,7 @@ High-level React components with a built-in design system. Perfect for rapid app
 ```typescript
 // Example: Get Button component from Themes
 {
-  "tool": "themes_get_component",
+  "tool": "themes_get_component_source",
   "arguments": { "componentName": "button" }
 }
 ```
@@ -97,7 +97,7 @@ Low-level, unstyled, accessible React components. Maximum flexibility for custom
 ```typescript
 // Example: Get Dialog primitive
 {
-  "tool": "primitives_get_component",
+  "tool": "primitives_get_component_source",
   "arguments": { "componentName": "dialog" }
 }
 ```
@@ -310,27 +310,30 @@ The MCP server provides these tools for AI assistants:
 ### Radix Themes Tools
 
 - **`themes_list_components`** - List all available Radix Themes components
-- **`themes_get_component`** - Get Radix Themes component source code
-- **`themes_get_installation`** - Get installation instructions for Radix Themes
+- **`themes_get_component_source`** - Get Radix Themes component source code
+- **`themes_get_component_documentation`** - Get Radix Themes component documentation
+- **`themes_get_getting_started`** - Get installation instructions for Radix Themes
 
 ### Radix Primitives Tools
 
 - **`primitives_list_components`** - List all available Radix Primitives
-- **`primitives_get_component`** - Get Radix Primitive component source code
-- **`primitives_get_installation`** - Get installation instructions for specific primitives
+- **`primitives_get_component_source`** - Get Radix Primitive component source code
+- **`primitives_get_component_documentation`** - Get Radix Primitive component documentation
+- **`primitives_get_getting_started`** - Get installation instructions for Radix Primitives
 
 ### Radix Colors Tools
 
 - **`colors_list_scales`** - List all available color scales
 - **`colors_get_scale`** - Get specific color scale definition
-- **`colors_get_installation`** - Get installation instructions for Radix Colors
+- **`colors_get_scale_documentation`** - Get Radix Colors documentation
+- **`colors_get_getting_started`** - Get installation instructions for Radix Colors
 
 ### Example Tool Usage
 
 ```typescript
 // Get Radix Themes Button component
 {
-  "tool": "themes_get_component",
+  "tool": "themes_get_component_source",
   "arguments": { "componentName": "button" }
 }
 
@@ -348,7 +351,7 @@ The MCP server provides these tools for AI assistants:
 
 // Get installation guide for Radix Colors
 {
-  "tool": "colors_get_installation",
+  "tool": "colors_get_getting_started",
   "arguments": {}
 }
 ```
