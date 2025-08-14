@@ -1,6 +1,6 @@
 {
   "name": "@gianpieropuleo/radix-mcp-server",
-  "version": "1.0.7",
+  "version": "2.0.0",
   "description": "A Model Context Protocol (MCP) server for Radix UI libraries (Themes, Primitives, Colors), providing AI assistants with access to component source code, installation guides, and design tokens.",
   "type": "module",
   "main": "./build/index.js",
