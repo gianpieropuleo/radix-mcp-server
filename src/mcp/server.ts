@@ -60,7 +60,7 @@ async function getVersion(): Promise<string> {
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const packagePath = path.join(__dirname, "..", "package.json");
+    const packagePath = path.join(__dirname, "..", "..", "package.json");
 
     const packageContent = fs.readFileSync(packagePath, "utf8");
     const packageJson = JSON.parse(packageContent);
