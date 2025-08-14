@@ -11,13 +11,13 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import { Tools } from "../types/tools.js";
 import { logError, logInfo } from "../utils/logger.js";
 import { validateAndSanitizeParams } from "../utils/validation.js";
-import { generateMCPHandlers, generateToolDefinitions } from "./adapter.js";
+import { generateMCPHandlers } from "./adapter.js";
 
 // Generate tool handlers and definitions
 const toolHandlers = generateMCPHandlers();
-const tools = generateToolDefinitions();
 
 /**
  * Wrapper function to handle requests with simple error handling
@@ -46,7 +46,7 @@ async function handleRequest<T>(
  * Following MCP SDK 1.16.0 best practices for handler registration
  * @param server - The MCP server instance
  */
-export const setupHandlers = (server: Server): void => {
+export const setupHandlers = (server: Server, tools: Tools): void => {
   logInfo("Setting up request handlers...");
 
   // List available tools

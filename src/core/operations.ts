@@ -1,5 +1,6 @@
 import {
-  GetComponentResult,
+  GetComponentDocumentationResult,
+  GetComponentSourceResult,
   GettingStartedResult,
   Library,
   ListComponentsResult,
@@ -49,29 +50,25 @@ export const createListComponentsOperation = (config: LibraryConfig) => {
   };
 };
 
-export const createGetComponentOperation = (config: LibraryConfig) => {
+export const createGetComponentSourceOperation = (config: LibraryConfig) => {
   return async (
     componentName: string
   ): Promise<{ content: Array<{ type: string; text: string }> }> => {
     try {
-      logInfo(`Fetching ${config.library} component: ${componentName}`);
+      logInfo(`Fetching ${config.library} component source: ${componentName}`);
 
-      const [usage, source] = await Promise.all([
-        config.fetchComponentUsage(componentName),
-        config.fetchComponentSource(componentName),
-      ]);
+      const source = await config.fetchComponentSource(componentName);
 
-      const result: GetComponentResult = {
+      const result: GetComponentSourceResult = {
         library: config.library,
         componentName,
         packageName: config.getPackageName(componentName),
         type: config.componentType,
         source,
-        usage,
       };
 
       logInfo(
-        `Successfully fetched ${config.library} component: ${componentName}`
+        `Successfully fetched ${config.library} component source: ${componentName}`
       );
 
       return {
@@ -84,11 +81,62 @@ export const createGetComponentOperation = (config: LibraryConfig) => {
       };
     } catch (error) {
       logError(
-        `Error fetching ${config.library} component: ${componentName}`,
+        `Error fetching ${config.library} component source: ${componentName}`,
         error
       );
       throw new Error(
-        `Failed to fetch ${config.library} component "${componentName}": ${
+        `Failed to fetch ${
+          config.library
+        } component source "${componentName}": ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+    }
+  };
+};
+
+export const createGetComponentDocumentationOperation = (
+  config: LibraryConfig
+) => {
+  return async (
+    componentName: string
+  ): Promise<{ content: Array<{ type: string; text: string }> }> => {
+    try {
+      logInfo(
+        `Fetching ${config.library} component documentation: ${componentName}`
+      );
+
+      const usage = await config.fetchComponentUsage(componentName);
+
+      const result: GetComponentDocumentationResult = {
+        library: config.library,
+        componentName,
+        packageName: config.getPackageName(componentName),
+        type: config.componentType,
+        usage,
+      };
+
+      logInfo(
+        `Successfully fetched ${config.library} component documentation: ${componentName}`
+      );
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    } catch (error) {
+      logError(
+        `Error fetching ${config.library} component documentation: ${componentName}`,
+        error
+      );
+      throw new Error(
+        `Failed to fetch ${
+          config.library
+        } component documentation "${componentName}": ${
           error instanceof Error ? error.message : String(error)
         }`
       );
@@ -141,7 +189,8 @@ export const createLibraryOperations = (
 
   return {
     listComponents: createListComponentsOperation(config),
-    getComponent: createGetComponentOperation(config),
+    getComponentSource: createGetComponentSourceOperation(config),
+    getComponentDocumentation: createGetComponentDocumentationOperation(config),
     getGettingStarted: createGettingStartedOperation(config),
   };
 };

@@ -64,19 +64,22 @@ export function getValidationSchema(
 ): z.ZodSchema<any> | undefined {
   const schemaMap: Record<string, z.ZodSchema<any>> = {
     // Radix Themes tools
-    themes_get_component: validationSchemas.componentName,
+    themes_get_component_source: validationSchemas.componentName,
+    themes_get_component_documentation: validationSchemas.componentName,
     themes_get_getting_started: validationSchemas.empty,
     themes_list_components: validationSchemas.empty,
 
     // Radix Primitives tools
-    primitives_get_component: validationSchemas.componentName,
+    primitives_get_component_source: validationSchemas.componentName,
+    primitives_get_component_documentation: validationSchemas.componentName,
     primitives_get_getting_started: validationSchemas.empty,
     primitives_list_components: validationSchemas.empty,
 
     // Radix Colors tools
-    colors_get_scale: validationSchemas.scaleName,
+    colors_get_component_source: validationSchemas.componentName,
+    colors_get_component_documentation: validationSchemas.componentName,
     colors_get_getting_started: validationSchemas.empty,
-    colors_list_scales: validationSchemas.empty,
+    colors_list_components: validationSchemas.empty,
   };
 
   return schemaMap[method];

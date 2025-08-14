@@ -33,11 +33,17 @@ export interface ListComponentsResult extends BaseResult {
   note: string;
 }
 
-export interface GetComponentResult extends BaseResult {
+export interface GetComponentSourceResult extends BaseResult {
   componentName: string;
   packageName: string;
   type: ComponentType;
   source: string;
+}
+
+export interface GetComponentDocumentationResult extends BaseResult {
+  componentName: string;
+  packageName: string;
+  type: ComponentType;
   usage: string;
 }
 

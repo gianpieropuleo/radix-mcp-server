@@ -75,7 +75,7 @@ export const libraryConfigs: Record<
     fetchGettingStartedContent: () => http.getPrimitivesGettingStarted(),
 
     getPackageName: (componentName: string) =>
-      `${Package.Primitives}${componentName}`,
+      `${Package.Primitives}${componentName.toLowerCase()}`,
 
     ...createDefaultHooks(Library.Primitives),
 

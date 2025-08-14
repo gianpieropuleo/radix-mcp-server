@@ -50,10 +50,18 @@ npx radix-mcp-server -l themes -g ghp_your_token_here
 
 #### CLI Interface (`src/index.ts`)
 
+- **Commander.js Integration**: Professional CLI with structured command parsing
 - **Library Selection**: Support for `themes|primitives|colors|all` modes
 - **GitHub API Configuration**: Optional token for higher rate limits
-- **Dynamic Tool Registration**: Tools registered based on library selection
 - **Environment Variables**: Support for `RADIX_LIBRARY` and `GITHUB_PERSONAL_ACCESS_TOKEN`
+- **Modular CLI Structure**: Commands and help text in `src/cli/` directory
+
+#### Core Architecture (`src/core/`)
+
+- **Configuration Management** (`config.ts`): Centralized library configurations and repository paths
+- **Operations Factory** (`operations.ts`): Unified operations pattern for all libraries
+- **Registry Pattern** (`registry.ts`): Cached operations with memoization
+- **Dynamic Tool Generation**: Configuration-driven tool creation from unified actions
 
 #### GitHub API Integration (`src/utils/http.ts`)
 
@@ -63,33 +71,45 @@ npx radix-mcp-server -l themes -g ghp_your_token_here
 - **Fallback Component Lists**: Hardcoded lists for offline/rate-limited scenarios
 - **Rate Limit Handling**: p-limit concurrency control with respectful API usage
 
-### Tool Categories
+### Tool Generation System
 
-#### Themes Tools (`src/tools/themes/`)
+#### Dynamic Tool Creation (`src/mcp/tools.ts`)
 
-- **`themes/list_components`**: Lists all available Radix Themes components with styling information
-- **`themes/get_component`**: Fetches component source code with theming examples and CSS custom properties
-- **`themes/get_installation`**: Complete setup guide including Theme provider configuration
+- **Configuration-Driven**: Tools generated from Action enum and Library configuration
+- **Unified Pattern**: All libraries share the same action types
+- **Type-Safe**: Full TypeScript support with Zod validation
 
-#### Primitives Tools (`src/tools/primitives/`)
+#### Available Actions (`src/types/actions.ts`)
 
-- **`primitives/list_components`**: Lists all Radix Primitives with composition patterns and accessibility info
-- **`primitives/get_component`**: Fetches component source with styling approaches (CSS, CSS-in-JS, Tailwind)
-- **`primitives/get_installation`**: Setup guide with component-specific or general installation instructions
+- **`list_components`**: Lists all available components for any library
+- **`get_component_source`**: Fetches component source code for any library
+- **`get_component_documentation`**: Gets documentation for any library component
+- **`get_getting_started`**: Returns official getting started guide for any library
 
-#### Colors Tools (`src/tools/colors/`)
+#### Tool Names Pattern
 
-- **`colors/list_scales`**: Lists all color scales with semantic usage guidelines
-- **`colors/get_scale`**: Detailed color scale information with step-by-step usage and accessibility considerations
-- **`colors/get_installation`**: Complete setup including CSS variables, framework integration, and design token patterns
+- Format: `{library}_{action}` (e.g., `themes_list_components`, `primitives_get_component_source`)
+- Dynamically registered based on selected library mode
+- Consistent interface across all libraries
 
-### Request Handling (`src/handler.ts`)
+### MCP Integration (`src/mcp/`)
 
-#### Dynamic Tool Registration
+#### Server (`server.ts`)
 
-- Tools are registered dynamically based on library selection
-- Clean separation between tool categories
-- Comprehensive error handling with graceful failure modes
+- **MCP Protocol Implementation**: Full Model Context Protocol support
+- **Dynamic Tool Registration**: Tools registered based on library selection
+- **Modular Architecture**: Clean separation of concerns
+
+#### Handler (`handler.ts`)
+
+- **Request Processing**: Unified handler for all tool requests
+- **Library Routing**: Routes requests to appropriate library operations
+- **Error Handling**: Comprehensive error handling with graceful failure modes
+
+#### Adapter (`adapter.ts`)
+
+- **Result Transformation**: Converts internal results to MCP-compatible formats
+- **Response Formatting**: Consistent response structure across all tools
 
 #### Validation and Security
 
@@ -138,6 +158,7 @@ All tools return comprehensive JSON responses including:
 ## Dependencies
 
 - **@modelcontextprotocol/sdk**: ^1.16.0 - MCP protocol implementation
+- **commander**: ^12.2.0 - Professional CLI framework for command parsing
 - **ky**: ^1.7.2 - Lightweight HTTP client for GitHub API integration
 - **p-memoize**: ^7.1.1 - Function memoization for intelligent caching
 - **p-limit**: ^6.2.0 - Concurrency control for respectful rate limiting

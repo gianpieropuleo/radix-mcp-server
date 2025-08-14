@@ -1,5 +1,6 @@
 export enum Action {
   ListComponents = "list_components",
-  GetComponent = "get_component",
+  GetComponentSource = "get_component_source",
+  GetComponentDocumentation = "get_component_documentation",
   GetGettingStarted = "get_getting_started",
 }

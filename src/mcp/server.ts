@@ -9,6 +9,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { DEFAULT_VERSION, PROGRAM_NAME } from "../cli/commands.js";
 import { Action } from "../types/actions.js";
 import { Library } from "../types/results.js";
+import { Tools } from "../types/tools.js";
 import { logError, logInfo, logWarning } from "../utils/logger.js";
 import { setupHandlers } from "./handler.js";
 import { createTool } from "./tools.js";
@@ -21,26 +22,31 @@ export interface ServerConfig {
   githubApiKey?: string | null;
 }
 
+function createToolsForLibrary(library: Library): Tools {
+  return {
+    ...createTool(library, Action.ListComponents),
+    ...createTool(library, Action.GetComponentSource),
+    ...createTool(library, Action.GetComponentDocumentation),
+    ...createTool(library, Action.GetGettingStarted),
+  };
+}
+
 /**
  * Get tools configuration based on library selection
  */
-function getToolsForLibrary(library: Library) {
+function getToolsForLibrary(library: Library): Tools {
   if (library !== Library.All) {
-    return {
-      ...createTool(library, Action.ListComponents),
-      ...createTool(library, Action.GetComponent),
-      ...createTool(library, Action.GetGettingStarted),
-    };
+    return createToolsForLibrary(library);
   }
 
-  return Object.values(Library).reduce((acc, library) => {
-    return {
-      ...acc,
-      ...createTool(library, Action.ListComponents),
-      ...createTool(library, Action.GetComponent),
-      ...createTool(library, Action.GetGettingStarted),
-    };
-  }, {});
+  return Object.values(Library)
+    .filter((lib) => lib !== Library.All)
+    .reduce((acc, library) => {
+      return {
+        ...acc,
+        ...createToolsForLibrary(library),
+      };
+    }, {});
 }
 
 /**
@@ -95,6 +101,8 @@ export async function startMCPServer(config: ServerConfig): Promise<void> {
     // Get version for server metadata
     const version = await getVersion();
 
+    const tools = getToolsForLibrary(config.library);
+
     // Initialize the MCP server with metadata and capabilities
     const server = new Server(
       {
@@ -103,13 +111,13 @@ export async function startMCPServer(config: ServerConfig): Promise<void> {
       },
       {
         capabilities: {
-          tools: getToolsForLibrary(config.library),
+          tools,
         },
       }
     );
 
     // Set up request handlers and register components
-    setupHandlers(server);
+    setupHandlers(server, tools);
 
     // Start server using stdio transport
     const transport = new StdioServerTransport();
